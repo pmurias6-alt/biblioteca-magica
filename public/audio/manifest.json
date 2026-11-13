@@ -1,0 +1,482 @@
+{
+ "ca1-rita-1": {
+  "f": "audio/ca1-rita-1.mp3",
+  "h": "455cc68ed4"
+ },
+ "ca1-rita-2": {
+  "f": "audio/ca1-rita-2.mp3",
+  "h": "ce40071054"
+ },
+ "ca1-rita-3": {
+  "f": "audio/ca1-rita-3.mp3",
+  "h": "cba92ac81e"
+ },
+ "ca1-rita-4": {
+  "f": "audio/ca1-rita-4.mp3",
+  "h": "d127587b6a"
+ },
+ "ca1-rita-5": {
+  "f": "audio/ca1-rita-5.mp3",
+  "h": "555fe738a2"
+ },
+ "ca1-rita-6": {
+  "f": "audio/ca1-rita-6.mp3",
+  "h": "a6513c6d97"
+ },
+ "ca1-rita-7": {
+  "f": "audio/ca1-rita-7.mp3",
+  "h": "8fa9327e91"
+ },
+ "ca1-rita-8": {
+  "f": "audio/ca1-rita-8.mp3",
+  "h": "3b8b6783a8"
+ },
+ "ca2-nil-1": {
+  "f": "audio/ca2-nil-1.mp3",
+  "h": "d64a6e706d"
+ },
+ "ca2-nil-2": {
+  "f": "audio/ca2-nil-2.mp3",
+  "h": "d8258df415"
+ },
+ "ca2-nil-3": {
+  "f": "audio/ca2-nil-3.mp3",
+  "h": "f561696983"
+ },
+ "ca2-nil-4": {
+  "f": "audio/ca2-nil-4.mp3",
+  "h": "d5baae2881"
+ },
+ "ca2-nil-5": {
+  "f": "audio/ca2-nil-5.mp3",
+  "h": "793ec64492"
+ },
+ "ca2-nil-6": {
+  "f": "audio/ca2-nil-6.mp3",
+  "h": "8509b72bdb"
+ },
+ "ca2-nil-7": {
+  "f": "audio/ca2-nil-7.mp3",
+  "h": "65e2bc280e"
+ },
+ "ca2-nil-8": {
+  "f": "audio/ca2-nil-8.mp3",
+  "h": "bfa1a4b0bb"
+ },
+ "ca3-ona-1": {
+  "f": "audio/ca3-ona-1.mp3",
+  "h": "254f154522"
+ },
+ "ca3-ona-2": {
+  "f": "audio/ca3-ona-2.mp3",
+  "h": "51d3574bdf"
+ },
+ "ca3-ona-3": {
+  "f": "audio/ca3-ona-3.mp3",
+  "h": "43a1672321"
+ },
+ "ca3-ona-4": {
+  "f": "audio/ca3-ona-4.mp3",
+  "h": "b56121547f"
+ },
+ "ca3-ona-5": {
+  "f": "audio/ca3-ona-5.mp3",
+  "h": "417ae7c99f"
+ },
+ "ca3-ona-6": {
+  "f": "audio/ca3-ona-6.mp3",
+  "h": "ce455e1d47"
+ },
+ "ca3-ona-7": {
+  "f": "audio/ca3-ona-7.mp3",
+  "h": "b6ac72416c"
+ },
+ "ca3-ona-8": {
+  "f": "audio/ca3-ona-8.mp3",
+  "h": "d953765a66"
+ },
+ "ca4-pau-1": {
+  "f": "audio/ca4-pau-1.mp3",
+  "h": "0d31f60ec4"
+ },
+ "ca4-pau-2": {
+  "f": "audio/ca4-pau-2.mp3",
+  "h": "a71f03c7b9"
+ },
+ "ca4-pau-3": {
+  "f": "audio/ca4-pau-3.mp3",
+  "h": "b4e37abfbd"
+ },
+ "ca4-pau-4": {
+  "f": "audio/ca4-pau-4.mp3",
+  "h": "27fe430b8e"
+ },
+ "ca4-pau-5": {
+  "f": "audio/ca4-pau-5.mp3",
+  "h": "3e66ea04d7"
+ },
+ "ca4-pau-6": {
+  "f": "audio/ca4-pau-6.mp3",
+  "h": "030f0608ce"
+ },
+ "ca4-pau-7": {
+  "f": "audio/ca4-pau-7.mp3",
+  "h": "76dc424814"
+ },
+ "ca4-pau-8": {
+  "f": "audio/ca4-pau-8.mp3",
+  "h": "da817a10d2"
+ },
+ "ca5-nuria-1": {
+  "f": "audio/ca5-nuria-1.mp3",
+  "h": "5c0534ad92"
+ },
+ "ca5-nuria-2": {
+  "f": "audio/ca5-nuria-2.mp3",
+  "h": "87920b1ca8"
+ },
+ "ca5-nuria-3": {
+  "f": "audio/ca5-nuria-3.mp3",
+  "h": "81fb69d125"
+ },
+ "ca5-nuria-4": {
+  "f": "audio/ca5-nuria-4.mp3",
+  "h": "6ac0ff3719"
+ },
+ "ca5-nuria-5": {
+  "f": "audio/ca5-nuria-5.mp3",
+  "h": "6d33f9c10f"
+ },
+ "ca5-nuria-6": {
+  "f": "audio/ca5-nuria-6.mp3",
+  "h": "2e1a4f2b50"
+ },
+ "ca5-nuria-7": {
+  "f": "audio/ca5-nuria-7.mp3",
+  "h": "7069791ab1"
+ },
+ "ca5-nuria-8": {
+  "f": "audio/ca5-nuria-8.mp3",
+  "h": "089855b431"
+ },
+ "en1-pip-1": {
+  "f": "audio/en1-pip-1.mp3",
+  "h": "cf896620bf"
+ },
+ "en1-pip-2": {
+  "f": "audio/en1-pip-2.mp3",
+  "h": "0dc634105e"
+ },
+ "en1-pip-3": {
+  "f": "audio/en1-pip-3.mp3",
+  "h": "3a5a086c3c"
+ },
+ "en1-pip-4": {
+  "f": "audio/en1-pip-4.mp3",
+  "h": "3a97d28f50"
+ },
+ "en1-pip-5": {
+  "f": "audio/en1-pip-5.mp3",
+  "h": "f1eeead0cf"
+ },
+ "en1-pip-6": {
+  "f": "audio/en1-pip-6.mp3",
+  "h": "f00a4f1205"
+ },
+ "en1-pip-7": {
+  "f": "audio/en1-pip-7.mp3",
+  "h": "bf087de00a"
+ },
+ "en1-pip-8": {
+  "f": "audio/en1-pip-8.mp3",
+  "h": "64d4ca6ed7"
+ },
+ "en2-milo-1": {
+  "f": "audio/en2-milo-1.mp3",
+  "h": "a6b33c09ee"
+ },
+ "en2-milo-2": {
+  "f": "audio/en2-milo-2.mp3",
+  "h": "2ee4a02ffb"
+ },
+ "en2-milo-3": {
+  "f": "audio/en2-milo-3.mp3",
+  "h": "fa2fe0242b"
+ },
+ "en2-milo-4": {
+  "f": "audio/en2-milo-4.mp3",
+  "h": "b4d1a5dd27"
+ },
+ "en2-milo-5": {
+  "f": "audio/en2-milo-5.mp3",
+  "h": "77a9b32325"
+ },
+ "en2-milo-6": {
+  "f": "audio/en2-milo-6.mp3",
+  "h": "53fadfaee1"
+ },
+ "en2-milo-7": {
+  "f": "audio/en2-milo-7.mp3",
+  "h": "324f605aea"
+ },
+ "en2-milo-8": {
+  "f": "audio/en2-milo-8.mp3",
+  "h": "473d1aceb3"
+ },
+ "en3-zip-1": {
+  "f": "audio/en3-zip-1.mp3",
+  "h": "2310ddaf5b"
+ },
+ "en3-zip-2": {
+  "f": "audio/en3-zip-2.mp3",
+  "h": "fdc307e689"
+ },
+ "en3-zip-3": {
+  "f": "audio/en3-zip-3.mp3",
+  "h": "e0c1fc1284"
+ },
+ "en3-zip-4": {
+  "f": "audio/en3-zip-4.mp3",
+  "h": "499c316649"
+ },
+ "en3-zip-5": {
+  "f": "audio/en3-zip-5.mp3",
+  "h": "4f18b599ec"
+ },
+ "en3-zip-6": {
+  "f": "audio/en3-zip-6.mp3",
+  "h": "55d92b67fb"
+ },
+ "en3-zip-7": {
+  "f": "audio/en3-zip-7.mp3",
+  "h": "de39a45359"
+ },
+ "en3-zip-8": {
+  "f": "audio/en3-zip-8.mp3",
+  "h": "18e5b29386"
+ },
+ "en4-kit-1": {
+  "f": "audio/en4-kit-1.mp3",
+  "h": "1fa221620a"
+ },
+ "en4-kit-2": {
+  "f": "audio/en4-kit-2.mp3",
+  "h": "e43adf8517"
+ },
+ "en4-kit-3": {
+  "f": "audio/en4-kit-3.mp3",
+  "h": "3a5c42ee60"
+ },
+ "en4-kit-4": {
+  "f": "audio/en4-kit-4.mp3",
+  "h": "8127abba19"
+ },
+ "en4-kit-5": {
+  "f": "audio/en4-kit-5.mp3",
+  "h": "39aee66a54"
+ },
+ "en4-kit-6": {
+  "f": "audio/en4-kit-6.mp3",
+  "h": "a7017b28d0"
+ },
+ "en4-kit-7": {
+  "f": "audio/en4-kit-7.mp3",
+  "h": "b3cd7741da"
+ },
+ "en4-kit-8": {
+  "f": "audio/en4-kit-8.mp3",
+  "h": "a50a9ec564"
+ },
+ "en5-ada-1": {
+  "f": "audio/en5-ada-1.mp3",
+  "h": "72b642f027"
+ },
+ "en5-ada-2": {
+  "f": "audio/en5-ada-2.mp3",
+  "h": "9eb3873aa3"
+ },
+ "en5-ada-3": {
+  "f": "audio/en5-ada-3.mp3",
+  "h": "c035f4c1a1"
+ },
+ "en5-ada-4": {
+  "f": "audio/en5-ada-4.mp3",
+  "h": "73535c300c"
+ },
+ "en5-ada-5": {
+  "f": "audio/en5-ada-5.mp3",
+  "h": "d993b02d65"
+ },
+ "en5-ada-6": {
+  "f": "audio/en5-ada-6.mp3",
+  "h": "2c86e1a8a7"
+ },
+ "en5-ada-7": {
+  "f": "audio/en5-ada-7.mp3",
+  "h": "12281935d2"
+ },
+ "en5-ada-8": {
+  "f": "audio/en5-ada-8.mp3",
+  "h": "80bf7af0d3"
+ },
+ "es1-calcetin-1": {
+  "f": "audio/es1-calcetin-1.mp3",
+  "h": "d610281610"
+ },
+ "es1-calcetin-2": {
+  "f": "audio/es1-calcetin-2.mp3",
+  "h": "85013a60af"
+ },
+ "es1-calcetin-3": {
+  "f": "audio/es1-calcetin-3.mp3",
+  "h": "2af62daabb"
+ },
+ "es1-calcetin-4": {
+  "f": "audio/es1-calcetin-4.mp3",
+  "h": "6a8193b995"
+ },
+ "es1-calcetin-5": {
+  "f": "audio/es1-calcetin-5.mp3",
+  "h": "0057bf8ca7"
+ },
+ "es1-calcetin-6": {
+  "f": "audio/es1-calcetin-6.mp3",
+  "h": "610c59ca1f"
+ },
+ "es1-calcetin-7": {
+  "f": "audio/es1-calcetin-7.mp3",
+  "h": "601078026b"
+ },
+ "es1-calcetin-8": {
+  "f": "audio/es1-calcetin-8.mp3",
+  "h": "333b32cd54"
+ },
+ "es2-lola-1": {
+  "f": "audio/es2-lola-1.mp3",
+  "h": "c81f086ce4"
+ },
+ "es2-lola-2": {
+  "f": "audio/es2-lola-2.mp3",
+  "h": "fca67c1a8c"
+ },
+ "es2-lola-3": {
+  "f": "audio/es2-lola-3.mp3",
+  "h": "9ee2f6c7f6"
+ },
+ "es2-lola-4": {
+  "f": "audio/es2-lola-4.mp3",
+  "h": "733a9559c0"
+ },
+ "es2-lola-5": {
+  "f": "audio/es2-lola-5.mp3",
+  "h": "f01c0ca377"
+ },
+ "es2-lola-6": {
+  "f": "audio/es2-lola-6.mp3",
+  "h": "878143e2a5"
+ },
+ "es2-lola-7": {
+  "f": "audio/es2-lola-7.mp3",
+  "h": "f4b5314938"
+ },
+ "es2-lola-8": {
+  "f": "audio/es2-lola-8.mp3",
+  "h": "0f60b7ed07"
+ },
+ "es3-bruno-1": {
+  "f": "audio/es3-bruno-1.mp3",
+  "h": "793086521a"
+ },
+ "es3-bruno-2": {
+  "f": "audio/es3-bruno-2.mp3",
+  "h": "92a72f1d71"
+ },
+ "es3-bruno-3": {
+  "f": "audio/es3-bruno-3.mp3",
+  "h": "16abad4070"
+ },
+ "es3-bruno-4": {
+  "f": "audio/es3-bruno-4.mp3",
+  "h": "6a84a118ae"
+ },
+ "es3-bruno-5": {
+  "f": "audio/es3-bruno-5.mp3",
+  "h": "ac3793a7af"
+ },
+ "es3-bruno-6": {
+  "f": "audio/es3-bruno-6.mp3",
+  "h": "bb10cb3e81"
+ },
+ "es3-bruno-7": {
+  "f": "audio/es3-bruno-7.mp3",
+  "h": "66fa6a4613"
+ },
+ "es3-bruno-8": {
+  "f": "audio/es3-bruno-8.mp3",
+  "h": "c112ec419c"
+ },
+ "es4-vera-1": {
+  "f": "audio/es4-vera-1.mp3",
+  "h": "ae856ec74a"
+ },
+ "es4-vera-2": {
+  "f": "audio/es4-vera-2.mp3",
+  "h": "8f2e051288"
+ },
+ "es4-vera-3": {
+  "f": "audio/es4-vera-3.mp3",
+  "h": "2ab184185c"
+ },
+ "es4-vera-4": {
+  "f": "audio/es4-vera-4.mp3",
+  "h": "b46a508738"
+ },
+ "es4-vera-5": {
+  "f": "audio/es4-vera-5.mp3",
+  "h": "eb18f59647"
+ },
+ "es4-vera-6": {
+  "f": "audio/es4-vera-6.mp3",
+  "h": "2448b48a63"
+ },
+ "es4-vera-7": {
+  "f": "audio/es4-vera-7.mp3",
+  "h": "d036c21ead"
+ },
+ "es4-vera-8": {
+  "f": "audio/es4-vera-8.mp3",
+  "h": "4175066c76"
+ },
+ "es5-teo-1": {
+  "f": "audio/es5-teo-1.mp3",
+  "h": "a41ffbcfd3"
+ },
+ "es5-teo-2": {
+  "f": "audio/es5-teo-2.mp3",
+  "h": "3ef8af182a"
+ },
+ "es5-teo-3": {
+  "f": "audio/es5-teo-3.mp3",
+  "h": "cbe3c3debb"
+ },
+ "es5-teo-4": {
+  "f": "audio/es5-teo-4.mp3",
+  "h": "90c9bab0f2"
+ },
+ "es5-teo-5": {
+  "f": "audio/es5-teo-5.mp3",
+  "h": "2534cc7e1d"
+ },
+ "es5-teo-6": {
+  "f": "audio/es5-teo-6.mp3",
+  "h": "705f584318"
+ },
+ "es5-teo-7": {
+  "f": "audio/es5-teo-7.mp3",
+  "h": "fefbd803f1"
+ },
+ "es5-teo-8": {
+  "f": "audio/es5-teo-8.mp3",
+  "h": "ff192de9f9"
+ }
+}

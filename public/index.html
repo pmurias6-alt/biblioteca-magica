@@ -253,6 +253,8 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .blurb{margin:14px 2px;font-style:italic}
 
 
+.dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
+.below.rf .cta+.cta{margin-top:10px}
 /* flecha de volver dibujada a mano */
 .back.arrow svg{width:38px;height:27px;fill:#fff;stroke:#6b4423;stroke-width:3;stroke-linejoin:round;display:block;margin:auto}
 .back.arrow.onimg{background:none;border:0;box-shadow:none;color:#6b4423;filter:drop-shadow(0 0 5px rgba(255,236,190,.65)) drop-shadow(0 1px 2px rgba(0,0,0,.45));display:flex;align-items:center;justify-content:center;width:56px;height:48px;transition:transform .15s}
@@ -726,7 +728,7 @@ function shelfView(g){
     </ul>
   </div>
   </div>
-  ${rfPool(g).length ? `<div class="below rf"><button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button></div>` : ""}
+  ${rfPool(g).length || wordPool(g).length ? `<div class="below rf">${rfPool(g).length ? `<button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button>` : ""}${wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="words" data-g="${g}">Joc de paraules</button>` : ""}${wordPool(g).length ? `<button type="button" class="cta" data-act="dict" data-g="${g}">Les meves paraules</button>` : ""}</div>` : ""}
   <details class="below"><summary>Per al mestre: errors per tipus en aquest dispositiu</summary>
     <dl><dt>Literal</dt><dd>${m.literal}</dd><dt>Vocabulari</dt><dd>${m.vocab}</dd><dt>Inferència</dt><dd>${m.infer}</dd></dl>
   </details>`;
@@ -1073,11 +1075,80 @@ function rfDoneView(){
   </section>`;
 }
 
+/* ---------- words: personal dictionary + matching game, from the vocabulary of chapters already finished ---------- */
+function wordPool(g){
+  const out = [];
+  BOOKS.filter(b => gradeOf(b) === g && !b.album).forEach(b => b.chapters.forEach(ch => { if (isDone(b.id, ch.n)) (ch.vocab || []).forEach(v => out.push({b, ch, v})); }));
+  return out;
+}
+const WN = w => w.replace(/[.,;:!?]+$/, "");
+function dictView(g){
+  const pool = wordPool(g), by = {};
+  pool.forEach(x => (by[x.b.id] = by[x.b.id] || {b:x.b, list:[]}).list.push(x.v));
+  const blocks = Object.values(by).map(o => `<section class="dgroup" lang="${o.b.lang}"><h3>${esc(o.b.title)}</h3><dl>${o.list.map(v => `<dt>${esc(WN(v.w))}</dt><dd>${esc(v.def)}</dd>`).join("")}</dl></section>`).join("");
+  return `
+  <button type="button" class="back arrow" data-act="shelf" data-g="${g}" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
+  <section class="page dict" lang="ca"><h2>Les meves paraules</h2><p class="muted">${pool.length} paraules apreses als capítols que has llegit.</p>${blocks}</section>`;
+}
+function startWords(g){
+  const pool = wordPool(g), items = [];
+  const cand = shuffle(pool).filter(x => pool.filter(y => y.b.lang === x.b.lang && WN(y.v.w).toLowerCase() !== WN(x.v.w).toLowerCase()).length >= 2);
+  const seenW = {};
+  for (const x of cand){ const k = x.b.lang + WN(x.v.w).toLowerCase(); if (seenW[k]) continue; seenW[k] = 1;
+    const others = shuffle(pool.filter(y => y.b.lang === x.b.lang && WN(y.v.w).toLowerCase() !== WN(x.v.w).toLowerCase())).filter((y, i, a) => a.findIndex(z => WN(z.v.w).toLowerCase() === WN(y.v.w).toLowerCase()) === i).slice(0, 2);
+    items.push({b:x.b, def:x.v.def, opts:shuffle([{t:WN(x.v.w), ok:true}, ...others.map(y => ({t:WN(y.v.w)}))])});
+    if (items.length >= 6) break; }
+  view = {name:"words", g, w:{items, queue:items.map((_, i) => i), cur:null, answered:null, first:0, seen:{}}};
+  wNext();
+}
+function wNext(){
+  const z = view.w;
+  if (!z.queue.length){ view.name = "wdone"; render(); window.scrollTo(0, 0); return; }
+  z.cur = z.queue.shift(); z.answered = null; render(); window.scrollTo(0, 0);
+}
+function wAnswer(i){
+  const z = view.w, it = z.items[z.cur], ok = !!it.opts[i].ok;
+  z.answered = {i, ok};
+  if (ok){ if (!z.seen[z.cur]) z.first++; } else z.queue.push(z.cur);
+  z.seen[z.cur] = true; render();
+}
+function wordsView(){
+  const z = view.w, it = z.items[z.cur], t = UI[it.b.lang];
+  const solved = z.items.length - z.queue.length - (z.answered && z.answered.ok ? 0 : 1);
+  const dots = z.items.map((_, i) => `<i class="${i < solved ? "on" : ""}"></i>`).join("");
+  const opts = it.opts.map((o, i) => { let cls = "opt"; if (z.answered && z.answered.i === i) cls += o.ok ? " ok" : " bad";
+    return `<button type="button" class="${cls}" data-act="wanswer" data-i="${i}" ${z.answered ? "disabled" : ""}>${esc(o.t)}</button>`; }).join("");
+  let fb = "";
+  if (z.answered){ const right = it.opts.find(o => o.ok).t;
+    fb = `<div class="fb ${z.answered.ok ? "" : "bad"}" role="status"><strong>${z.answered.ok ? t.right : t.wrong}</strong>${esc(right)}${z.answered.ok ? "" : `<span class="again">${t.again}</span>`}</div><button type="button" class="cta" data-act="wnext">${t.next}</button>`; }
+  return `
+  <button type="button" class="back arrow" data-act="shelf" data-g="${view.g}" aria-label="${t.back}"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
+  <section class="page" lang="${it.b.lang}">
+    <div class="dots" aria-hidden="true">${dots}</div>
+    <span class="badge">${esc(it.b.title)}</span>
+    <p class="qtext">${esc(it.def)}</p>
+    <div class="opts">${opts}</div>
+    ${fb}
+  </section>`;
+}
+function wDoneView(){
+  const z = view.w;
+  return `
+  <section class="page done" lang="ca">
+    <img class="punt" src="img/punt.png" alt="">
+    <h2>Paraules fetes!</h2>
+    <p class="score">${z.first} / ${z.items.length}</p>
+    <p>encertades a la primera</p>
+    <button type="button" class="cta" data-act="words" data-g="${view.g}">Una altra tanda</button>
+    <button type="button" class="cta" data-act="shelf" data-g="${view.g}">Tornar a la sala</button>
+  </section>`;
+}
+
 function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g) : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
@@ -1143,6 +1214,10 @@ document.addEventListener("click", e => {
   else if (a === "listen") toggleTalk();
   else if (a === "quiz") startQuiz();
   else if (a === "rf") startReinforce(+el.dataset.g);
+  else if (a === "dict") go({name:"dict", g:+el.dataset.g});
+  else if (a === "words") startWords(+el.dataset.g);
+  else if (a === "wanswer") wAnswer(+el.dataset.i);
+  else if (a === "wnext") wNext();
   else if (a === "rfanswer") rfAnswer(+el.dataset.i);
   else if (a === "rfnext") rfNext();
   else if (a === "answer") answer(+el.dataset.i);

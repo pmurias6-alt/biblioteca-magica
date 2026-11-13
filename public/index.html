@@ -266,6 +266,35 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .onshelf.multi li:first-child{margin-left:auto}.onshelf.multi li:last-child{margin-right:auto}
 .onshelf.multi .plate{height:30%}.onshelf.multi .cbtitle{font-size:.72rem;padding:1% 6% 5% 14%}.onshelf.multi .cbtag{font-size:.42rem;padding-top:7%}.onshelf.multi li{transform:none!important}.onshelf.multi li:nth-child(even){transform:rotate(.7deg)!important}
 .slabel{position:absolute;left:8px;bottom:-5px;font-family:var(--display);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#e8c877;opacity:.85;text-shadow:0 1px 1px rgba(0,0,0,.8);pointer-events:none}
+
+/* baldas por idioma: cada una con su color y su cartel, y libros distintos */
+.srow{border-bottom:0!important;box-shadow:none!important;flex-direction:column;align-items:stretch;padding-bottom:0!important}
+.srow[data-l="ca"]{background:linear-gradient(180deg,rgba(150,25,45,.38),rgba(80,12,25,.25))}
+.srow[data-l="es"]{background:linear-gradient(180deg,rgba(215,150,30,.34),rgba(120,70,8,.22))}
+.srow[data-l="en"]{background:linear-gradient(180deg,rgba(45,95,200,.38),rgba(15,35,95,.26))}
+.onshelf.multi{height:auto!important;flex:1 1 0;min-height:0;padding-top:4%!important}
+.plank{flex:none;height:26px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;box-shadow:0 6px 8px -2px rgba(0,0,0,.7),inset 0 2px 0 rgba(255,255,255,.28),inset 0 -3px 0 rgba(0,0,0,.35);border-top:1px solid rgba(255,255,255,.3)}
+.plank b{font-family:var(--display);font-size:1.02rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.7),0 0 8px rgba(255,255,255,.35)}
+.plank i{font-style:normal;font-size:.6rem;letter-spacing:.06em;color:rgba(255,255,255,.85);text-shadow:0 1px 0 rgba(0,0,0,.6)}
+.srow[data-l="ca"] .plank{background:linear-gradient(180deg,#b3283f,#7a1528)}
+.srow[data-l="es"] .plank{background:linear-gradient(180deg,#e6a52a,#a96a0c)}
+.srow[data-l="en"] .plank{background:linear-gradient(180deg,#3d7be0,#1c479a)}
+.slabel{display:none}
+/* libros distintos: altura, lomo, adornos y color propio */
+.onshelf.multi li{--lea:color-mix(in srgb,var(--acc) 55%,#1a0f10)}
+.onshelf.multi li .cb{background:linear-gradient(90deg,rgba(0,0,0,.5),rgba(255,255,255,.14) 5%,rgba(0,0,0,.28) 8.5%,transparent 13%,transparent 80%,rgba(0,0,0,.22)),color-mix(in srgb,var(--acc) 62%,#1a0f10)!important}
+.onshelf.multi li.v0{height:100%;aspect-ratio:.72}
+.onshelf.multi li.v1{height:92%;aspect-ratio:.76}
+.onshelf.multi li.v2{height:97%;aspect-ratio:.68}
+.onshelf.multi li.v3{height:89%;aspect-ratio:.74}
+.onshelf.multi li.v0 .cb::after{content:"";position:absolute;left:12%;right:0;bottom:7%;height:7%;background:repeating-linear-gradient(90deg,#e8c877 0 6px,transparent 6px 12px);opacity:.75}
+.onshelf.multi li.v1 .cb::after{content:"";position:absolute;left:12%;right:0;top:0;height:6%;background:linear-gradient(180deg,#e8c877,rgba(232,200,119,.0));opacity:.65}
+.onshelf.multi li.v2 .cb::after{content:"★";position:absolute;right:7%;bottom:3%;color:#e8c877;font-size:.75rem;text-shadow:0 1px 1px rgba(0,0,0,.6)}
+.onshelf.multi li.v3 .cb::after{content:"";position:absolute;left:12%;right:0;top:54%;height:5%;background:#e8c877;opacity:.55;box-shadow:0 9px 0 -1px rgba(232,200,119,.45)}
+.onshelf.multi li.v2::before{content:"";position:absolute;left:62%;width:7%;top:90%;height:14%;background:linear-gradient(180deg,#d83a3a,#8f1c1c);clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);z-index:2}
+.onshelf.multi li.v3::before{content:"";position:absolute;left:-1%;top:35%;height:18%;width:6%;background:linear-gradient(90deg,#f0d48a,#b8923a);border-radius:2px;z-index:2;box-shadow:0 1px 2px rgba(0,0,0,.6)}
+.onshelf.multi li.v1 .cb::before{border-style:solid;border-color:rgba(255,226,160,.5)}
+.onshelf.multi li.v3 .cb::before{border-style:double;border-width:3px}
 /* flecha de volver dibujada a mano */
 .back.arrow svg{width:38px;height:27px;fill:#fff;stroke:#6b4423;stroke-width:3;stroke-linejoin:round;display:block;margin:auto}
 .back.arrow.onimg{background:none;border:0;box-shadow:none;color:#6b4423;filter:drop-shadow(0 0 5px rgba(255,236,190,.65)) drop-shadow(0 1px 2px rgba(0,0,0,.45));display:flex;align-items:center;justify-content:center;width:56px;height:48px;transition:transform .15s}
@@ -725,13 +754,13 @@ function coursesView(){
 const ROOMS = {1:"img/room-1.jpg", 2:"img/room-2.jpg", 6:"img/room-6.jpg"};
 const THREADS = ["#ff7a5c","#ffd447","#86e07a","#62ccff","#ff9fe0","#ffab45"];
 function stitch(t){ return t.split(" ").map((w, i) => `<span class="w">${esc(w)}</span>`).join(" "); }
-function spine(b){ const done = (saved.done[b.id]||[]).length >= b.totalChapters;
-  return `<li data-l="${b.lang}"><button type="button" class="cb" data-act="book" data-id="${b.id}" aria-label="${esc(b.subject)}: ${esc(b.title)}"><span class="cbtag">${esc(b.subject)}</span><span class="plate">${art(b)}</span><span class="cbtitle"><span>${stitch(b.title)}</span></span></button>${done ? '<span class="star" aria-hidden="true">★</span>' : ""}</li>`; }
+function spine(b, i = 0){ const done = (saved.done[b.id]||[]).length >= b.totalChapters;
+  return `<li data-l="${b.lang}" class="v${i % 4}" style="--acc:${b.cover}"><button type="button" class="cb" data-act="book" data-id="${b.id}" aria-label="${esc(b.subject)}: ${esc(b.title)}"><span class="cbtag">${esc(b.subject)}</span><span class="plate">${art(b)}</span><span class="cbtitle"><span>${stitch(b.title)}</span></span></button>${done ? '<span class="star" aria-hidden="true">★</span>' : ""}</li>`; }
 const LANGS = [["ca","Català"],["es","Castellano"],["en","English"]];
 function shelves(g, list){
-  if (list.length <= 4) return `<ul class="onshelf" data-g="${g}">${list.map(spine).join("")}</ul>`;
+  if (list.length <= 4) return `<ul class="onshelf" data-g="${g}">${list.map((b, i) => spine(b, i)).join("")}</ul>`;
   const rows = LANGS.map(([l, n]) => [l, n, list.filter(b => b.lang === l)]).filter(r => r[2].length);
-  return `<div class="shelves" style="--n:${rows.length}">${rows.map(([l, n, bs]) => `<div class="srow"><ul class="onshelf multi" data-g="${g}" aria-label="${n}" tabindex="0">${bs.map(spine).join("")}</ul><span class="slabel">${n}${bs.length > 4 ? " ›" : ""}</span></div>`).join("")}</div>`;
+  return `<div class="shelves" style="--n:${rows.length}">${rows.map(([l, n, bs]) => `<div class="srow" data-l="${l}"><ul class="onshelf multi" data-g="${g}" aria-label="${n}" tabindex="0">${bs.map((b, i) => spine(b, i)).join("")}</ul><div class="plank"><b>${n}</b><i>${bs.length} llibres${bs.length > 3 ? " · llisca ›››" : ""}</i></div></div>`).join("")}</div>`;
 }
 function shelfView(g){
   const list = BOOKS.filter(b => gradeOf(b) === g), m = saved.miss, label = GRADES.find(x => x[0] === g)[1];

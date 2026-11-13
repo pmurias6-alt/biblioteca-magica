@@ -274,6 +274,33 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .hot[disabled]{background:rgba(40,24,12,.36);cursor:default;display:flex;align-items:flex-end;justify-content:center}
 .hot span{color:#fff8e6;font-size:.6875rem;font-weight:700;padding-bottom:7%;opacity:.8}
 
+
+/* desktop / landscape fit: whole picture visible, centred */
+@media (min-aspect-ratio:1/1){
+  .fill>.scene{width:min(100cqw,calc(100dvh * var(--r)))}
+  body.full main,.fill{background:transparent !important}
+  .fill>.scene{container-type:inline-size;box-shadow:0 0 40px rgba(0,0,0,.55)}
+  .onshelf .cbtitle{font-size:clamp(.6rem,4.6cqw,1.1rem)}
+  .onshelf .cbtag{font-size:clamp(.45rem,2.6cqw,.62rem)}
+  body.alb main{max-width:min(1080px,96vw)}
+  body.alb .album .apager{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:32px;align-items:center}
+  body.alb .aimg{max-height:calc(100dvh - 230px)}
+  body.alb .atext{margin:0;text-align:left;font-size:2rem;min-height:0}
+  body.alb .album[data-g="2"] .atext{font-size:1.7rem}
+}
+/* page-turn animation */
+.anav{display:flex;align-items:center;justify-content:center;gap:18px;margin:10px 0 0}
+.anav .pnum{margin:0;min-width:5.5em}
+.anav button{width:48px;height:44px;border-radius:12px;border:1.5px solid var(--page-ink);background:none;color:var(--page-ink);font-size:1.6rem;line-height:1}
+.anav button[disabled]{opacity:.25;cursor:default}
+.apager{perspective:1200px}
+@media (prefers-reduced-motion:no-preference){
+  .apager.in-r{animation:turnR .42s cubic-bezier(.22,.8,.3,1)}
+  .apager.in-l{animation:turnL .42s cubic-bezier(.22,.8,.3,1)}
+  @keyframes turnR{from{opacity:0;transform:translateX(36px) rotateY(-14deg);transform-origin:left center}to{opacity:1;transform:none}}
+  @keyframes turnL{from{opacity:0;transform:translateX(-36px) rotateY(14deg);transform-origin:right center}to{opacity:1;transform:none}}
+}
+
 /* paged reader */
 .chimg{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:10px;border:2px solid #4a3320;margin:0 0 14px;break-inside:avoid;background:#e6d3a8}
 .pnum{text-align:center;margin:10px 0 0;font-size:.875rem;color:var(--page-muted);font-variant-numeric:tabular-nums}
@@ -725,7 +752,7 @@ function readView(b, ch){
   <article class="page reader album" data-g="${gradeOf(b)}" lang="${b.lang}">
     <div id="pager" class="apager"><img id="aimg" class="aimg" alt=""><p id="atext" class="atext"></p></div>
     <p class="lmsg" id="lmsg" hidden role="status"></p>
-    <p class="pnum" id="pnum"></p>
+    <div class="anav"><button type="button" data-act="prevp" id="aprev" aria-label="${t.prevp}">‹</button><span class="pnum" id="pnum"></span><button type="button" data-act="nextp" id="anext" aria-label="${t.nextp}">›</button></div>
     <button type="button" class="cta" data-act="quiz" id="toquiz" hidden>${t.goShort}</button>
   </article>`;
   return `
@@ -769,6 +796,11 @@ function showPage(){
     document.getElementById("atext").textContent = pg.t;
     document.getElementById("pnum").textContent = `${view.p + 1} ${tt.of} ${album.length}`;
     document.getElementById("toquiz").hidden = view.p !== album.length - 1;
+    document.getElementById("aprev").disabled = view.p === 0;
+    document.getElementById("anext").disabled = view.p === album.length - 1;
+    const pgr = document.getElementById("pager"), dir = view.dir || 0; view.dir = 0;
+    pgr.classList.remove("in-l", "in-r");
+    if (dir){ void pgr.offsetWidth; pgr.classList.add(dir > 0 ? "in-r" : "in-l"); }
     if (album[view.p + 1]) new Image().src = album[view.p + 1].img;
     return;
   }
@@ -783,7 +815,7 @@ function turn(d){
   if (view.name !== "read") return;
   stopTalk();
   const n = Math.max(0, Math.min(view.pages - 1, view.p + d));
-  if (n !== view.p){ view.p = n; showPage(); }
+  if (n !== view.p){ view.dir = d; view.p = n; showPage(); }
 }
 function hideTip(){ const tip = document.getElementById("tip"); if (tip) tip.hidden = true; }
 function showTip(i, el){
@@ -995,6 +1027,7 @@ function render(){
   app.innerHTML = view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
+  document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
 }

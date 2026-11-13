@@ -264,6 +264,13 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .lplank{width:100%;max-width:540px;height:16px;background:#6b4423;border-top:4px solid #c9993f;border-radius:0 0 6px 6px}
 .lall{margin-top:22px;padding:10px 22px;border-radius:99px;border:2px solid #c9993f;background:#5b3a1c;color:#f3d98b;font:700 .95rem var(--display,serif);cursor:pointer}.lall:active{background:#7a4a22}
 .crumb{color:#8a5a2b;font-weight:700;margin:2px 0 10px}
+.dicscene{container-type:inline-size}
+.dscroll{position:absolute;left:20.6%;top:32.6%;width:58.8%;height:32%;overflow-y:auto;overscroll-behavior:contain;padding:0 2.2cqw 1cqw;line-height:normal;-webkit-mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);scrollbar-width:none;color:#3b2a1a}.dscroll::-webkit-scrollbar{display:none}
+.dscroll .dsec{padding-top:2cqw;scroll-margin-top:0}.dscroll .dsec+.dsec{margin-top:2cqw;border-top:1.5px solid #c9993f}
+.dscroll .dcap{font-size:7.2cqw;padding:1cqw 0 0}.dscroll .dent{font-size:3.7cqw;line-height:1.4;padding:2cqw 0}.dscroll .dw{font-size:4.2cqw}.dscroll .dleg{font-size:3.2cqw;color:#8a5a2b;margin:3cqw 0 4cqw;text-align:center}
+.dicscene .dstrip{position:absolute;left:4%;right:4%;top:83.4%;bottom:auto;width:auto;max-width:none;margin:0;padding:1.6cqw 2cqw;gap:1.6cqw;background:rgba(36,20,10,.55);border:1.5px solid #c9993f;border-radius:99px;box-shadow:none;line-height:normal}
+.dicscene .dl{min-width:9cqw;height:9cqw;border-radius:50%;font-size:4cqw;padding:0}
+.dinfo{position:absolute;left:50%;top:93%;transform:translateX(-50%);padding:1.2cqw 4cqw;border-radius:99px;background:rgba(42,22,12,.82);border:1.5px solid #c9993f;color:#f3d98b;font:700 3.6cqw var(--display,serif);white-space:nowrap;line-height:1.3}
 .dscene{position:relative;min-height:100vh;min-height:100dvh;background:linear-gradient(rgba(30,16,8,.25),rgba(30,16,8,.6)),url(img/fons-biblioteca.jpg) center/cover fixed;display:flex;flex-direction:column;align-items:center;font-family:var(--display,serif);padding:0 14px 28px}
 .dscene>.dback{position:absolute;left:12px;top:14px;z-index:3;background:none;border:0;padding:0;width:52px;height:36px;cursor:pointer;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}.dscene>.dback svg{width:100%;height:100%;fill:#fff}
 .dsign{position:relative;margin:34px auto 26px;padding:12px 34px;background:#7a4a22;border:4px solid #c9993f;border-radius:14px;text-align:center;box-shadow:0 6px 0 #4a2e17,0 12px 20px rgba(0,0,0,.5)}
@@ -1189,18 +1196,20 @@ function dictView(g, l){
   const body = letters.map(c => `<section class="dsec" id="dL-${c}" data-c="${c}"><div class="dcap">${c}</div>${by[c].map(it => `<p class="dent" lang="${it.lang}"><span class="dw">${esc(it.w)}</span>${tag(it)}${it.age ? `<i class="dstar" title="Paraula bàsica d'aquesta edat">★</i>` : ""}${it.got ? `<span class="dgot">✓</span>` : ""} <span class="dsep">—</span> <span class="dd">${esc(it.def)}</span></p>`).join("")}</section>`).join("");
   const strip = letters.map(c => `<button type="button" class="dl" data-act="dgo" data-c="${c}">${c}</button>`).join("");
   return `
-  <div class="dscene">
-    <button type="button" class="dback" data-act="tolang" data-mode="dict" aria-label="Enrere">${ARR}</button>
-    <div class="dsign"><h1>Diccionari</h1><p>${age} · ${lname} · ${items.length} paraules</p></div>
-    <div class="dbook one"><div class="dpg s">${body || '<p class="dd">Encara no hi ha paraules.</p>'}</div></div>
-    <p class="dleg"><i class="dstar">★</i> paraula bàsica de ${age} &nbsp; <span class="dgot">✓</span> llibre llegit</p>
-    <div class="dstrip" role="group" aria-label="Lletres">${strip}</div>
+  <div class="fill contain" style="--r:${572/1024}">
+    <div class="scene dicscene">
+      <img src="img/dic-fons.jpg" alt="">
+      <div class="dscroll" tabindex="0">${body || '<p class="dd">Encara no hi ha paraules.</p>'}<p class="dleg"><i class="dstar">★</i> paraula bàsica de ${age} &nbsp; <span class="dgot">✓</span> llibre llegit</p></div>
+      <div class="dstrip" role="group" aria-label="Lletres">${strip}</div>
+      <div class="dinfo">${age} · ${lname} · ${items.length} paraules</div>
+    </div>
+    <button type="button" class="back arrow onimg" data-act="tolang" data-mode="dict" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
   </div>`;
 }
 function dictAfter(){
-  const strip = document.querySelector(".dstrip"); if (!strip || !("IntersectionObserver" in window)) return;
-  const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting){ strip.querySelectorAll(".dl").forEach(b => b.classList.toggle("on", b.dataset.c === e.target.dataset.c)); const on = strip.querySelector(".dl.on"); if (on) on.scrollIntoView({inline:"center", block:"nearest"}); } }); }, {rootMargin:"-20% 0px -70% 0px"});
-  document.querySelectorAll(".dsec").forEach(x => io.observe(x));
+  const strip = document.querySelector(".dstrip"), root = document.querySelector(".dscroll"); if (!strip || !root || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting){ strip.querySelectorAll(".dl").forEach(b => b.classList.toggle("on", b.dataset.c === e.target.dataset.c)); const on = strip.querySelector(".dl.on"); if (on) strip.scrollTo({left:on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2, behavior:"smooth"}); } }); }, {root, rootMargin:"0px 0px -75% 0px"});
+  root.querySelectorAll(".dsec").forEach(x => io.observe(x));
 }
 function startWords(g){
   const pool = wordPool(g), items = [];

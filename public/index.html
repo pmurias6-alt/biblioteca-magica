@@ -264,6 +264,10 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .lplank{width:100%;max-width:540px;height:16px;background:#6b4423;border-top:4px solid #c9993f;border-radius:0 0 6px 6px}
 .lall{margin-top:22px;padding:10px 22px;border-radius:99px;border:2px solid #c9993f;background:#5b3a1c;color:#f3d98b;font:700 .95rem var(--display,serif);cursor:pointer}.lall:active{background:#7a4a22}
 .crumb{color:#8a5a2b;font-weight:700;margin:2px 0 10px}
+.gscroll{left:23.2%;top:34.8%;width:53.6%;height:34%;text-align:left;padding:1.2cqw 0}
+.gscroll .gcard{display:flex;gap:2.2cqw;align-items:center;width:100%;margin:0 0 2.2cqw;padding:2cqw 2.4cqw;border:1.5px solid #c9993f;border-left:2.6cqw solid #7a1f1f;border-radius:1cqw 2cqw 2cqw 1cqw;background:#5b3a1c;color:#fbe6a8;font-size:3.4cqw;line-height:1.25;box-shadow:.8cqw .8cqw 0 rgba(0,0,0,.3);text-align:left}
+.gscroll .gcard:nth-child(3n+2){border-left-color:#8a5410}.gscroll .gcard:nth-child(3n){border-left-color:#1f4272}
+.gscroll .gic{font-size:6.4cqw;line-height:1}.gscroll .gcard b{font-family:var(--display,serif);font-size:3.8cqw}.gscroll .gcard small{display:block;font-size:2.8cqw;line-height:1.3;color:#e0c58a}
 .dicscene{container-type:inline-size}
 .dscroll{position:absolute;left:21.4%;top:32%;width:58%;height:33%;text-align:center;overflow-y:auto;overscroll-behavior:contain;padding:0 2.2cqw 1cqw;line-height:normal;-webkit-mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);scrollbar-width:none;color:#3b2a1a}.dscroll::-webkit-scrollbar{display:none}
 .dscroll .dsec{padding-top:2cqw;scroll-margin-top:0}.dscroll .dsec+.dsec{margin-top:2cqw;border-top:1.5px solid #c9993f}
@@ -1435,13 +1439,14 @@ function gamesView(g, l){
   const cards = list.map(x => { const ok = x.can(g);
     return `<button type="button" class="gcard" data-act="play" data-game="${x.id}" ${ok ? "" : "disabled"}><span class="gic">${x.ic}</span><span><b>${x.t}</b><br><small>${ok ? x.d : "Encara no hi ha prou llibres en aquest idioma."}</small></span></button>`; }).join("");
   const lname = l === "all" ? "Tots els idiomes" : (LANGS.find(x => x[0] === l) || [, l])[1];
-  const spines = ["#8a2d3a","#2f6a52","#c9993f","#3a4f8c","#7a2e12","#6b4a8c","#2f6a52","#c9993f","#8a2d3a","#3a4f8c","#7a2e12","#6b4a8c","#2f6a52","#c9993f","#8a2d3a","#3a4f8c"].map((c, k) => `<i style="background:${c};height:${26 + (k * 7) % 16}px"></i>`).join("");
   return `
-  <div class="dscene">
-    <div class="dshelf" aria-hidden="true">${spines}<span class="dlamp"></span></div>
-    <div class="dtop"><button type="button" class="dback" data-act="tolang" data-mode="games" aria-label="Enrere">${ARR}</button><b>Jocs de lectura</b><span>${age} · ${lname}</span></div>
-    <div class="gwrap">${cards}</div>
-    <div class="dlect"></div>
+  <div class="fill contain" style="--r:${572/1024}">
+    <div class="scene dicscene">
+      <img src="img/jocs-fons.jpg" alt="">
+      <div class="dscroll gscroll" tabindex="0">${cards}</div>
+      <div class="dinfo" style="top:86.4%">${age} · ${lname}</div>
+    </div>
+    <button type="button" class="back arrow onimg" data-act="tolang" data-mode="games" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
   </div>`;
 }
 function play(id){

@@ -257,7 +257,7 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .below.rf .cta+.cta{margin-top:10px}
 
 /* varias baldas por curso: una por idioma, con deslizamiento horizontal */
-.shelves{overflow:hidden;position:absolute;left:3%;right:3%;top:26.5%;bottom:2%;display:flex;flex-direction:column;background:linear-gradient(90deg,#2b170c,#3a2112 6%,#2a160b 94%,#1d0f07);border:3px solid #5b3a1c;border-radius:10px 10px 4px 4px;box-shadow:inset 0 0 30px rgba(0,0,0,.65),0 6px 18px rgba(0,0,0,.5);line-height:normal}
+.shelves{overflow:hidden;position:absolute;left:calc((100% - 100cqw)/2 + 3cqw);right:calc((100% - 100cqw)/2 + 3cqw);top:26.5%;bottom:2%;display:flex;flex-direction:column;background:linear-gradient(90deg,#2b170c,#3a2112 6%,#2a160b 94%,#1d0f07);border:3px solid #5b3a1c;border-radius:10px 10px 4px 4px;box-shadow:inset 0 0 30px rgba(0,0,0,.65),0 6px 18px rgba(0,0,0,.5);line-height:normal}
 .srow{flex:1 1 0;min-height:0;position:relative;display:flex;align-items:flex-end;padding-bottom:3.5%;border-bottom:7px solid #7a4a22;box-shadow:0 5px 8px -3px rgba(0,0,0,.7);background:radial-gradient(ellipse at 50% 100%,rgba(255,190,100,.12),transparent 70%)}
 .srow:last-child{border-bottom-width:9px}
 .onshelf.multi{position:relative;left:auto;right:auto;bottom:auto;width:100%;height:88%;padding:0 5%;gap:3%;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
@@ -308,7 +308,8 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .openbook .play{width:auto;height:auto;border:0;background:none;box-shadow:none;border-radius:0;color:#4a2f1a;display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 10px;mix-blend-mode:multiply;opacity:.88}
 .openbook .play svg{width:64px;height:32px;stroke:#6b4423;filter:drop-shadow(0 0 3px rgba(255,236,190,.8));stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
 .openbook .plt{font-size:.9rem}
-@media (min-width:480px){.openbook .pright h1{font-size:1.5rem}.openbook .play svg{width:84px;height:42px}.openbook .plt{font-size:1.05rem}.openbook .ptag{font-size:.95rem}}
+@media (min-width:480px){.openbook .pright h1{font-size:1.5rem}.openbook .play svg{width:62px;height:32px}.openbook .plt{font-size:.98rem;margin-top:2px}.openbook .ptag{font-size:.95rem}}
+.openbook .plt{line-height:1.2}.openbook .pnext{line-height:1.2;margin-top:3px}
 @media (min-width:480px){.pright h1{font-size:1.3rem}.play{width:84px;height:84px;font-size:2rem}.pstars i{font-size:1.1rem}.onshelf .cbtitle{font-size:1.1rem}.onshelf .cbtag{font-size:.62rem}}
 
 /* cover and course picker */

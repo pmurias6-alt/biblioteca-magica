@@ -253,7 +253,7 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .blurb{margin:14px 2px;font-style:italic}
 
 
-.emo{position:absolute;inset:0;display:grid;place-items:center;font-size:2.6rem;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.45),rgba(255,255,255,0) 70%),linear-gradient(160deg,rgba(255,255,255,.22),rgba(0,0,0,.18));filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}.dlang{margin:22px 0 0;padding:6px 12px;border-radius:10px;color:#fff;font-size:1.15rem;letter-spacing:.12em;text-transform:uppercase}.dlang small{float:right;opacity:.85;font-size:.8rem}.dlang[data-l=ca]{background:#b3283f}.dlang[data-l=es]{background:#c58a12}.dlang[data-l=en]{background:#2d63c0}.onum{display:inline-grid;place-items:center;width:1.5em;height:1.5em;margin-right:.5em;border-radius:50%;background:#2f7d4a;color:#fff;font-size:.85em}.dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
+.emo{position:absolute;inset:0;display:grid;place-items:center;font-size:2.6rem;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.45),rgba(255,255,255,0) 70%),linear-gradient(160deg,rgba(255,255,255,.22),rgba(0,0,0,.18));filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.pcard{min-height:78px;padding:8px;border:2px solid #5b4a3a;border-radius:12px;background:#f3e3c3;font:inherit;font-size:.95rem;line-height:1.2;color:#3b2a1a}.pcard.up{background:#fff8e6;border-color:#4a6fa5}.pcard.w.up{font-weight:700;background:#e8f0ff}.pcard.ok{background:#e4f5e0;border-color:#2f7d4a}.dlang{margin:22px 0 0;padding:6px 12px;border-radius:10px;color:#fff;font-size:1.15rem;letter-spacing:.12em;text-transform:uppercase}.dlang small{float:right;opacity:.85;font-size:.8rem}.dlang[data-l=ca]{background:#b3283f}.dlang[data-l=es]{background:#c58a12}.dlang[data-l=en]{background:#2d63c0}.onum{display:inline-grid;place-items:center;width:1.5em;height:1.5em;margin-right:.5em;border-radius:50%;background:#2f7d4a;color:#fff;font-size:.85em}.dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
 .below.rf .cta+.cta{margin-top:10px}
 
 /* varias baldas por curso: una por idioma, con deslizamiento horizontal */
@@ -782,7 +782,7 @@ function shelfView(g){
     ${shelves(g, list)}
   </div>
   </div>
-  ${rfPool(g).length || wordPool(g).length || orderPool(g).length ? `<div class="below rf">${rfPool(g).length ? `<button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button>` : ""}${wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="words" data-g="${g}">Joc de paraules</button>` : ""}${orderPool(g).length ? `<button type="button" class="cta" data-act="order" data-g="${g}">Ordena la història</button>` : ""}${wordPool(g).length ? `<button type="button" class="cta" data-act="dict" data-g="${g}">Les meves paraules</button>` : ""}</div>` : ""}
+  ${rfPool(g).length || wordPool(g).length || orderPool(g).length ? `<div class="below rf">${rfPool(g).length ? `<button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button>` : ""}${wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="words" data-g="${g}">Joc de paraules</button>` : ""}${clozePool(g).length >= 4 && wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="cloze" data-g="${g}">Completa la frase</button>` : ""}${pairsPool(g).length ? `<button type="button" class="cta" data-act="pairs" data-g="${g}">Parelles de paraules</button>` : ""}${orderPool(g).length ? `<button type="button" class="cta" data-act="order" data-g="${g}">Ordena la història</button>` : ""}${wordPool(g).length ? `<button type="button" class="cta" data-act="dict" data-g="${g}">Les meves paraules</button>` : ""}</div>` : ""}
   <details class="below"><summary>Per al mestre: errors per tipus en aquest dispositiu</summary>
     <dl><dt>Literal</dt><dd>${m.literal}</dd><dt>Vocabulari</dt><dd>${m.vocab}</dd><dt>Inferència</dt><dd>${m.infer}</dd></dl>
   </details>`;
@@ -1192,10 +1192,10 @@ function wDoneView(){
   return `
   <section class="page done" lang="ca">
     <img class="punt" src="img/punt.png" alt="">
-    <h2>Paraules fetes!</h2>
+    <h2>${z.mode === "cloze" ? "Frases completades!" : "Paraules fetes!"}</h2>
     <p class="score">${z.first} / ${z.items.length}</p>
     <p>encertades a la primera</p>
-    <button type="button" class="cta" data-act="words" data-g="${view.g}">Una altra tanda</button>
+    <button type="button" class="cta" data-act="${z.mode === "cloze" ? "cloze" : "words"}" data-g="${view.g}">Una altra tanda</button>
     <button type="button" class="cta" data-act="shelf" data-g="${view.g}">Tornar a la sala</button>
   </section>`;
 }
@@ -1260,11 +1260,83 @@ function orderDoneView(){
   </section>`;
 }
 
+/* ---------- "Completa la frase" and "Parelles" (two more word games) ---------- */
+const GM = {
+  ca:{cloze:"Completa la frase", pairs:"Parelles de paraules", pp:"Troba cada paraula amb el seu significat.", moves:"moviments", done:"Parelles fetes!", again:"Una altra tanda", back:"Tornar a la sala"},
+  es:{cloze:"Completa la frase", pairs:"Parejas de palabras", pp:"Encuentra cada palabra con su significado.", moves:"movimientos", done:"¡Parejas hechas!", again:"Otra tanda", back:"Volver a la sala"},
+  en:{cloze:"Complete the sentence", pairs:"Word pairs", pp:"Match each word with its meaning.", moves:"moves", done:"All pairs found!", again:"Another round", back:"Back to the room"}
+};
+function clozePool(g){
+  const out = [];
+  BOOKS.filter(b => gradeOf(b) === g).forEach(b => b.chapters.forEach(ch => { if (!isDone(b.id, ch.n)) return;
+    const texts = ch.pages ? ch.pages.map(p => p.t) : ch.paragraphs;
+    texts.forEach(t => t.split(/(?<=[.!?»])\s+/).forEach(sn => { if (sn.length < 28 || sn.length > 190) return;
+      (ch.vocab || []).forEach(v => { const w = WN(v.w); if (w.length > 2 && sn.includes(w) && !/^[A-ZÀ-Ú]/.test(w)) out.push({b, sn, w}); }); })); }));
+  return out;
+}
+function startCloze(g){
+  const pool = clozePool(g), vpool = wordPool(g), items = [], seen = {};
+  for (const x of shuffle(pool)){
+    const k = x.b.lang + x.w.toLowerCase(); if (seen[k]) continue;
+    const others = shuffle(vpool.filter(y => y.b.lang === x.b.lang && WN(y.v.w).toLowerCase() !== x.w.toLowerCase())).map(y => WN(y.v.w)).filter((w, i, a) => a.indexOf(w) === i).slice(0, 2);
+    if (others.length < 2) continue; seen[k] = 1;
+    const blank = x.sn.replace(x.w, "_____");
+    items.push({b:x.b, def:blank, opts:shuffle([{t:x.w, ok:true}, ...others.map(t => ({t}))])});
+    if (items.length >= 6) break; }
+  if (!items.length) return;
+  view = {name:"words", g, w:{items, queue:items.map((_, i) => i), cur:null, answered:null, first:0, seen:{}, mode:"cloze"}};
+  wNext();
+}
+function pairsPool(g){
+  const by = {}; wordPool(g).forEach(x => (by[x.b.lang] = by[x.b.lang] || []).push(x));
+  return Object.entries(by).filter(([l, a]) => a.length >= 5);
+}
+function startPairs(g){
+  const opts = pairsPool(g); if (!opts.length) return;
+  const [lang, arr] = opts[Math.floor(Math.random() * opts.length)], seen = {}, pick = [];
+  for (const x of shuffle(arr)){ const k = WN(x.v.w).toLowerCase(); if (seen[k]) continue; seen[k] = 1; pick.push(x); if (pick.length === 5) break; }
+  if (pick.length < 5) return;
+  const cards = shuffle(pick.flatMap((x, i) => [{p:i, t:WN(x.v.w), w:true}, {p:i, t:x.v.def}]));
+  view = {name:"pairs", g, pr:{lang, cards, open:[], done:{}, moves:0, lock:false}};
+  render(); window.scrollTo(0, 0);
+}
+function pairsTap(i){
+  const z = view.pr; if (z.lock || z.done[i] || z.open.includes(i)) return;
+  z.open.push(i);
+  if (z.open.length === 2){ z.moves++; const [a, b] = z.open;
+    if (z.cards[a].p === z.cards[b].p){ z.done[a] = z.done[b] = true; z.open = [];
+      if (Object.keys(z.done).length === z.cards.length){ view.name = "pdone"; } }
+    else { z.lock = true; render(); setTimeout(() => { if (view.pr !== z) return; z.open = []; z.lock = false; render(); }, 1100); return; } }
+  render();
+}
+function pairsView(){
+  const z = view.pr, t = GM[z.lang];
+  const cards = z.cards.map((c, i) => { const up = z.done[i] || z.open.includes(i);
+    return `<button type="button" class="pcard${up ? " up" : ""}${z.done[i] ? " ok" : ""}${c.w ? " w" : ""}" data-act="ptap" data-i="${i}" ${up ? "disabled" : ""}>${up ? esc(c.t) : "?"}</button>`; }).join("");
+  return `
+  <button type="button" class="back arrow" data-act="shelf" data-g="${view.g}" aria-label="${t.back}"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
+  <section class="page" lang="${z.lang}">
+    <h2 class="qtext">${t.pairs}</h2><p class="muted">${t.pp} · ${z.moves} ${t.moves}</p>
+    <div class="pgrid">${cards}</div>
+  </section>`;
+}
+function pairsDoneView(){
+  const z = view.pr, t = GM[z.lang];
+  return `
+  <section class="page done" lang="${z.lang}">
+    <img class="punt" src="img/punt.png" alt="">
+    <h2>${t.done}</h2>
+    <p class="score">${z.moves}</p><p>${t.moves}</p>
+    <button type="button" class="cta" data-act="pairs" data-g="${view.g}">${t.again}</button>
+    <button type="button" class="cta" data-act="shelf" data-g="${view.g}">${t.back}</button>
+  </section>`;
+}
+
 function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g) : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g) : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
@@ -1332,6 +1404,9 @@ document.addEventListener("click", e => {
   else if (a === "rf") startReinforce(+el.dataset.g);
   else if (a === "dict") go({name:"dict", g:+el.dataset.g});
   else if (a === "words") startWords(+el.dataset.g);
+  else if (a === "cloze") startCloze(+el.dataset.g);
+  else if (a === "pairs") startPairs(+el.dataset.g);
+  else if (a === "ptap") pairsTap(+el.dataset.i);
   else if (a === "order") startOrder(+el.dataset.g);
   else if (a === "opick") orderPick(+el.dataset.i);
   else if (a === "onext") orderNext();

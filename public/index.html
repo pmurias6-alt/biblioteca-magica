@@ -264,14 +264,14 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .lplank{width:100%;max-width:540px;height:16px;background:#6b4423;border-top:4px solid #c9993f;border-radius:0 0 6px 6px}
 .lall{margin-top:22px;padding:10px 22px;border-radius:99px;border:2px solid #c9993f;background:#5b3a1c;color:#f3d98b;font:700 .95rem var(--display,serif);cursor:pointer}.lall:active{background:#7a4a22}
 .crumb{color:#8a5a2b;font-weight:700;margin:2px 0 10px}
-.gscroll{left:21.2%;top:34.4%;width:57.8%;height:36.6%;text-align:left;padding:1cqw 0}
-.gscroll .gcard{display:flex;gap:2.2cqw;align-items:center;width:100%;margin:0 0 2.2cqw;padding:2.2cqw 2.2cqw;border:1.5px solid #c9993f;border-left:2.4cqw solid #7a1f1f;border-radius:1cqw 2cqw 2cqw 1cqw;background:#5b3a1c;color:#fbe6a8;font-size:3.4cqw;line-height:1.25;box-shadow:.8cqw .8cqw 0 rgba(0,0,0,.3);text-align:left}
+.gscroll{left:14.5%;top:29%;width:71%;height:46%;text-align:left;padding:1cqw 0}
+.gscroll .gcard{display:flex;gap:2.2cqw;align-items:center;width:100%;margin:0 0 2.2cqw;padding:2.2cqw 2.2cqw;border:1.5px solid #c9993f;border-left:2.4cqw solid #7a1f1f;border-radius:1cqw 2cqw 2cqw 1cqw;background:#5b3a1c;color:#fbe6a8;font-size:3.8cqw;line-height:1.25;box-shadow:.8cqw .8cqw 0 rgba(0,0,0,.3);text-align:left}
 .gscroll .gcard:nth-child(3n+2){border-left-color:#8a5410}.gscroll .gcard:nth-child(3n){border-left-color:#1f4272}
-.gscroll .gic{font-size:6cqw;line-height:1}.gscroll .gcard b{font-family:var(--display,serif);font-size:3.9cqw}.gscroll .gcard small{display:block;font-size:3cqw;line-height:1.3;color:#e0c58a}
+.gscroll .gic{font-size:7cqw;line-height:1}.gscroll .gcard b{font-family:var(--display,serif);font-size:4.5cqw}.gscroll .gcard small{display:block;font-size:3.3cqw;line-height:1.3;color:#e0c58a}
 .dicscene{container-type:inline-size}
-.dscroll{position:absolute;left:21.4%;top:32%;width:58%;height:33%;text-align:center;overflow-y:auto;overscroll-behavior:contain;padding:0 2.2cqw 1cqw;line-height:normal;-webkit-mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);scrollbar-width:none;color:#3b2a1a}.dscroll::-webkit-scrollbar{display:none}
+.dscroll{position:absolute;left:13.5%;top:27%;width:73%;height:40%;text-align:center;overflow-y:auto;overscroll-behavior:contain;padding:0 2.2cqw 1cqw;line-height:normal;-webkit-mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);scrollbar-width:none;color:#3b2a1a}.dscroll::-webkit-scrollbar{display:none}
 .dscroll .dsec{padding-top:2cqw;scroll-margin-top:0}.dscroll .dsec+.dsec{margin-top:2cqw;border-top:1.5px solid #c9993f}
-.dscroll .dcap{font-size:8.4cqw;padding:1cqw 0 0;text-align:center}.dscroll .dent{font-size:4.5cqw;line-height:1.4;padding:2.2cqw 0}.dscroll .dw{font-size:5.1cqw}.dscroll .dleg{font-size:3.2cqw;color:#8a5a2b;margin:3cqw 0 4cqw;text-align:center}
+.dscroll .dcap{font-size:8.4cqw;padding:1cqw 0 0;text-align:center}.dscroll .dent{font-size:4.9cqw;line-height:1.4;padding:2.2cqw 0}.dscroll .dw{font-size:5.5cqw}.dscroll .dleg{font-size:3.2cqw;color:#8a5a2b;margin:3cqw 0 4cqw;text-align:center}
 .dicscene .dstrip{position:absolute;left:4%;right:4%;top:83.4%;bottom:auto;width:auto;max-width:none;margin:0;padding:1.6cqw 2cqw;gap:1.6cqw;background:rgba(36,20,10,.55);border:1.5px solid #c9993f;border-radius:99px;box-shadow:none;line-height:normal}
 .dicscene .dl{min-width:9cqw;height:9cqw;border-radius:50%;font-size:4cqw;padding:0}
 .dinfo{position:absolute;left:50%;top:93%;transform:translateX(-50%);padding:1.2cqw 4cqw;border-radius:99px;background:rgba(42,22,12,.82);border:1.5px solid #c9993f;color:#f3d98b;font:700 3.6cqw var(--display,serif);white-space:nowrap;line-height:1.3}
@@ -1220,7 +1220,7 @@ function dictView(g, l){
   return `
   <div class="fill contain" style="--r:${572/1024}">
     <div class="scene dicscene">
-      <img src="img/dic-fons.jpg" alt="">
+      <img src="img/dic-fons2.jpg" alt="">
       <div class="dscroll" tabindex="0">${body || '<p class="dd">${UIX[U].empty}</p>'}<p class="dleg"><i class="dstar">★</i> ${UIX[U].legend(age)} &nbsp; <span class="dgot">✓</span> ${UIX[U].read}</p></div>
       <div class="dstrip" role="group" aria-label="Lletres">${strip}</div>
       <div class="dinfo">${age} · ${lname} · ${items.length} ${UIX[U].words}</div>
@@ -1464,7 +1464,7 @@ function gamesView(g, l){
   return `
   <div class="fill contain" style="--r:${572/1024}">
     <div class="scene dicscene">
-      <img src="img/jocs-fons.jpg" alt="">
+      <img src="img/jocs-fons2.jpg" alt="">
       <div class="dscroll gscroll" tabindex="0">${cards}</div>
       <div class="dinfo" style="top:86.4%">${age} · ${lname}</div>
     </div>

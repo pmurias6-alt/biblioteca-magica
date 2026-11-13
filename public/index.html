@@ -253,7 +253,7 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .blurb{margin:14px 2px;font-style:italic}
 
 
-.dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
+.emo{position:absolute;inset:0;display:grid;place-items:center;font-size:2.6rem;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.45),rgba(255,255,255,0) 70%),linear-gradient(160deg,rgba(255,255,255,.22),rgba(0,0,0,.18));filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}.dlang{margin:22px 0 0;padding:6px 12px;border-radius:10px;color:#fff;font-size:1.15rem;letter-spacing:.12em;text-transform:uppercase}.dlang small{float:right;opacity:.85;font-size:.8rem}.dlang[data-l=ca]{background:#b3283f}.dlang[data-l=es]{background:#c58a12}.dlang[data-l=en]{background:#2d63c0}.onum{display:inline-grid;place-items:center;width:1.5em;height:1.5em;margin-right:.5em;border-radius:50%;background:#2f7d4a;color:#fff;font-size:.85em}.dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
 .below.rf .cta+.cta{margin-top:10px}
 
 /* varias baldas por curso: una por idioma, con deslizamiento horizontal */
@@ -449,6 +449,12 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 <script src="books/tercer.js"></script>
 <script src="books/quart.js"></script>
 <script src="books/cinque.js"></script>
+<script src="books/primer2.js"></script>
+<script src="books/segon2.js"></script>
+<script src="books/tercer2.js"></script>
+<script src="books/quart2.js"></script>
+<script src="books/cinque2.js"></script>
+<script src="books/vocab-extra.js"></script>
 <script src="books/nous6-ca.js"></script>
 <script src="books/nous6-es.js"></script>
 <script src="books/nous6-en.js"></script>
@@ -627,8 +633,8 @@ BOOKS.forEach(b => {
 (window.NEW6 || []).forEach(b => BOOKS.push(b));
 /* first-grade picture books: one picture and one or two short sentences per page */
 (window.ALBUMS || []).forEach(a => BOOKS.push(Object.assign({}, a, {album: true, totalChapters: 1, coverImg: `img/${a.id}-1.${a.ext}`,
-  chapters: [{n: 1, title: a.title, minutes: 2, tags: a.tags, paragraphs: [], vocab: [], questions: a.questions,
-    pages: a.pages.map((pg, i) => ({t: pg.t, alt: pg.alt, img: `img/${a.id}-${i + 1}.${a.ext}`}))}]})));
+  chapters: [{n: 1, title: a.title, minutes: 2, tags: a.tags, paragraphs: [], vocab: a.vocab || [], questions: a.questions,
+    pages: a.pages.map((pg, i) => ({t: pg.t, alt: pg.alt, e: pg.e, img: `img/${a.id}-${i + 1}.${a.ext}`}))}]})));
 const LOCKED = {subject:"Medi", title:"Pròximament", course:"6è", motif:"lock"};
 
 /* ---------- interface text, in each book's language ---------- */
@@ -706,7 +712,7 @@ const ART = {
 locked:`<svg viewBox="0 0 150 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="150" height="210" fill="#8a8fa3"/><g transform="translate(51 62)" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="22" width="40" height="30" rx="5"/><path d="M12 22v-8a12 12 0 0 1 24 0v8"/></g></svg>`
 };
 
-const art = b => b.coverImg ? `<img src="${b.coverImg}" alt="" style="object-position:${b.coverPos || "50% 50%"}" onerror="this.style.display='none'">` : saved.style === "d" ? `<img src="img/${b.lang}.jpg" alt="">` : ART[b.id];
+const art = b => b.coverImg ? `<img src="${b.coverImg}" alt="" style="object-position:${b.coverPos || "50% 50%"}" onerror="${b.album && b.chapters[0].pages[0].e ? `this.outerHTML='<span class=&quot;emo&quot;>${b.chapters[0].pages[0].e}</span>'` : "this.style.display='none'"}">` : saved.style === "d" ? `<img src="img/${b.lang}.jpg" alt="">` : ART[b.id];
 
 /* ---------- state (saved on this device only) ---------- */
 const KEY = "biblioteca-magica-proto";
@@ -776,7 +782,7 @@ function shelfView(g){
     ${shelves(g, list)}
   </div>
   </div>
-  ${rfPool(g).length || wordPool(g).length ? `<div class="below rf">${rfPool(g).length ? `<button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button>` : ""}${wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="words" data-g="${g}">Joc de paraules</button>` : ""}${wordPool(g).length ? `<button type="button" class="cta" data-act="dict" data-g="${g}">Les meves paraules</button>` : ""}</div>` : ""}
+  ${rfPool(g).length || wordPool(g).length || orderPool(g).length ? `<div class="below rf">${rfPool(g).length ? `<button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button>` : ""}${wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="words" data-g="${g}">Joc de paraules</button>` : ""}${orderPool(g).length ? `<button type="button" class="cta" data-act="order" data-g="${g}">Ordena la història</button>` : ""}${wordPool(g).length ? `<button type="button" class="cta" data-act="dict" data-g="${g}">Les meves paraules</button>` : ""}</div>` : ""}
   <details class="below"><summary>Per al mestre: errors per tipus en aquest dispositiu</summary>
     <dl><dt>Literal</dt><dd>${m.literal}</dd><dt>Vocabulari</dt><dd>${m.vocab}</dd><dt>Inferència</dt><dd>${m.infer}</dd></dl>
   </details>`;
@@ -877,7 +883,7 @@ function showPage(){
   if (album){
     const pg = album[view.p], tt = UI[book(view.id).lang], im = document.getElementById("aimg");
     const bk = book(view.id);
-    im.onerror = () => { im.onerror = null; im.src = "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${bk.cover}'/><stop offset='1' stop-color='#fbe6a8'/></linearGradient></defs><rect width='400' height='300' fill='url(#g)'/><text x='200' y='160' font-size='22' text-anchor='middle' fill='#fff' font-family='sans-serif'>Il·lustració aviat</text></svg>`); };
+    im.onerror = () => { im.onerror = null; im.src = "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${bk.cover}'/><stop offset='1' stop-color='#fbe6a8'/></linearGradient></defs><rect width='400' height='300' fill='url(#g)'/>${pg.e ? `<text x='200' y='185' font-size='150' text-anchor='middle'>${pg.e}</text>` : `<text x='200' y='160' font-size='22' text-anchor='middle' fill='#fff' font-family='sans-serif'>Il·lustració aviat</text>`}</svg>`); };
     im.src = pg.img; im.alt = pg.alt;
     document.getElementById("atext").textContent = pg.t;
     document.getElementById("pnum").textContent = `${view.p + 1} ${tt.of} ${album.length}`;
@@ -1126,17 +1132,19 @@ function rfDoneView(){
 /* ---------- words: personal dictionary + matching game, from the vocabulary of chapters already finished ---------- */
 function wordPool(g){
   const out = [];
-  BOOKS.filter(b => gradeOf(b) === g && !b.album).forEach(b => b.chapters.forEach(ch => { if (isDone(b.id, ch.n)) (ch.vocab || []).forEach(v => out.push({b, ch, v})); }));
+  BOOKS.filter(b => gradeOf(b) === g).forEach(b => b.chapters.forEach(ch => { if (isDone(b.id, ch.n)) (ch.vocab || []).forEach(v => out.push({b, ch, v})); }));
   return out;
 }
 const WN = w => w.replace(/[.,;:!?]+$/, "");
 function dictView(g){
   const pool = wordPool(g), by = {};
   pool.forEach(x => (by[x.b.id] = by[x.b.id] || {b:x.b, list:[]}).list.push(x.v));
-  const blocks = Object.values(by).map(o => `<section class="dgroup" lang="${o.b.lang}"><h3>${esc(o.b.title)}</h3><dl>${o.list.map(v => `<dt>${esc(WN(v.w))}</dt><dd>${esc(v.def)}</dd>`).join("")}</dl></section>`).join("");
+  const blocks = LANGS.map(([l, n]) => { const bs = Object.values(by).filter(o => o.b.lang === l); if (!bs.length) return "";
+    const cnt = bs.reduce((a, o) => a + o.list.length, 0);
+    return `<h2 class="dlang" data-l="${l}">${n} <small>${cnt}</small></h2>` + bs.map(o => `<section class="dgroup" lang="${l}"><h3>${esc(o.b.title)}</h3><dl>${o.list.slice().sort((a, b) => WN(a.w).localeCompare(WN(b.w), l)).map(v => `<dt>${esc(WN(v.w))}</dt><dd>${esc(v.def)}</dd>`).join("")}</dl></section>`).join(""); }).join("");
   return `
   <button type="button" class="back arrow" data-act="shelf" data-g="${g}" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
-  <section class="page dict" lang="ca"><h2>Les meves paraules</h2><p class="muted">${pool.length} paraules apreses als capítols que has llegit.</p>${blocks}</section>`;
+  <section class="page dict" lang="ca"><h2>El meu diccionari</h2><p class="muted">${pool.length} paraules apreses als llibres que has llegit.</p>${blocks}</section>`;
 }
 function startWords(g){
   const pool = wordPool(g), items = [];
@@ -1192,11 +1200,71 @@ function wDoneView(){
   </section>`;
 }
 
+/* ---------- "Ordena la història": put 4 pieces of a story you have read in order ---------- */
+const ORD = {
+  ca:{h:"Ordena la història", p:"Toca els trossos en l'ordre en què passen.", next:"Següent", done:"Històries ordenades!", again:"Una altra tanda", back:"Tornar a la sala", fine:"a la primera"},
+  es:{h:"Ordena la historia", p:"Toca los trozos en el orden en que pasan.", next:"Siguiente", done:"¡Historias ordenadas!", again:"Otra tanda", back:"Volver a la sala", fine:"a la primera"},
+  en:{h:"Put the story in order", p:"Tap the pieces in the order they happen.", next:"Next", done:"Stories in order!", again:"Another round", back:"Back to the room", fine:"first try"}
+};
+function orderPool(g){
+  const out = [];
+  BOOKS.filter(b => gradeOf(b) === g).forEach(b => b.chapters.forEach(ch => { if (!isDone(b.id, ch.n)) return;
+    const parts = (ch.pages ? ch.pages.map(p => p.t) : ch.paragraphs).filter(t => t.length > 40 && !/^[—«"]/.test(t));
+    if (parts.length >= 4) out.push({b, parts}); }));
+  return out;
+}
+function startOrder(g){
+  const pool = orderPool(g), rounds = [];
+  shuffle(pool).slice(0, 3).forEach(o => { const st = Math.floor(Math.random() * (o.parts.length - 3));
+    const items = o.parts.slice(st, st + 4).map((t, k) => ({k, t})); rounds.push({b:o.b, items:shuffle(items)}); });
+  while (rounds.length < 3 && pool.length){ const o = pool[rounds.length % pool.length], st = Math.floor(Math.random() * (o.parts.length - 3));
+    rounds.push({b:o.b, items:shuffle(o.parts.slice(st, st + 4).map((t, k) => ({k, t})))}); }
+  view = {name:"order", g, o:{rounds, r:0, next:0, miss:0, clean:0, flash:-1}};
+  render(); window.scrollTo(0, 0);
+}
+function orderPick(i){
+  const z = view.o, rd = z.rounds[z.r], it = rd.items[i];
+  if (it.done) return;
+  if (it.k === z.next){ it.done = z.next + 1; z.next++; z.flash = -1; } else { z.miss++; z.flash = i; }
+  render();
+}
+function orderNext(){
+  const z = view.o; if (z.miss === 0) z.clean++; 
+  z.r++; z.next = 0; z.miss = 0; z.flash = -1;
+  if (z.r >= z.rounds.length) view.name = "odone";
+  render(); window.scrollTo(0, 0);
+}
+function orderView(){
+  const z = view.o, rd = z.rounds[z.r], t = ORD[rd.b.lang], fin = z.next >= 4;
+  const items = rd.items.map((it, i) => `<button type="button" class="opt ostep${it.done ? " ok" : ""}${z.flash === i ? " bad" : ""}" data-act="opick" data-i="${i}" ${it.done ? "disabled" : ""}>${it.done ? `<b class="onum">${it.done}</b>` : ""}${esc(it.t)}</button>`).join("");
+  return `
+  <button type="button" class="back arrow" data-act="shelf" data-g="${view.g}" aria-label="${t.back}"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
+  <section class="page" lang="${rd.b.lang}">
+    <div class="dots" aria-hidden="true">${z.rounds.map((_, i) => `<i class="${i < z.r ? "on" : ""}"></i>`).join("")}</div>
+    <span class="badge">${esc(rd.b.title)}</span>
+    <h2 class="qtext">${t.h}</h2><p class="muted">${t.p}</p>
+    <div class="opts">${items}</div>
+    ${fin ? `<button type="button" class="cta" data-act="onext">${t.next}</button>` : ""}
+  </section>`;
+}
+function orderDoneView(){
+  const z = view.o, t = ORD[z.rounds[0].b.lang];
+  return `
+  <section class="page done" lang="ca">
+    <img class="punt" src="img/punt.png" alt="">
+    <h2>${t.done}</h2>
+    <p class="score">${z.clean} / ${z.rounds.length}</p>
+    <p>${t.fine}</p>
+    <button type="button" class="cta" data-act="order" data-g="${view.g}">${t.again}</button>
+    <button type="button" class="cta" data-act="shelf" data-g="${view.g}">${t.back}</button>
+  </section>`;
+}
+
 function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g) : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g) : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
@@ -1264,6 +1332,9 @@ document.addEventListener("click", e => {
   else if (a === "rf") startReinforce(+el.dataset.g);
   else if (a === "dict") go({name:"dict", g:+el.dataset.g});
   else if (a === "words") startWords(+el.dataset.g);
+  else if (a === "order") startOrder(+el.dataset.g);
+  else if (a === "opick") orderPick(+el.dataset.i);
+  else if (a === "onext") orderNext();
   else if (a === "wanswer") wAnswer(+el.dataset.i);
   else if (a === "wnext") wNext();
   else if (a === "rfanswer") rfAnswer(+el.dataset.i);

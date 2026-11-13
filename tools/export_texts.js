@@ -2,7 +2,7 @@
 const fs = require("fs"), path = require("path"), vm = require("vm");
 const dir = path.join(__dirname, "..", "public", "books");
 const ctx = {window: {}}; vm.createContext(ctx);
-["primer.js", "segon.js", "tercer.js", "quart.js", "cinque.js"].forEach(f => {
+["primer.js", "segon.js", "tercer.js", "quart.js", "cinque.js", "primer2.js", "segon2.js", "tercer2.js", "quart2.js", "cinque2.js"].forEach(f => {
   const p = path.join(dir, f); if (fs.existsSync(p)) vm.runInContext(fs.readFileSync(p, "utf8"), ctx, {filename: f});
 });
 const out = [];

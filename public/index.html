@@ -476,6 +476,24 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
   .book,.chapter,.opt,.cta{transition:transform .12s ease}
   .book:not([disabled]):active,.chapter:not([disabled]):active,.opt:not([disabled]):active,.cta:active{transform:scale(.98)}
 }
+/* ---- game screens: library look ---- */
+body.gm,body.gm[data-style]{background:linear-gradient(rgba(30,16,8,.3),rgba(30,16,8,.62)),url(img/fons-biblioteca.jpg) center/cover fixed}
+body.gm main{padding-top:22px}
+body.gm .page{background:#f6e7c6;border:4px solid #5b3a1c;box-shadow:0 0 0 2px #c9993f,0 10px 24px rgba(0,0,0,.55);color:#3b2a1a;--page-ink:#3b2a1a;--page-muted:#8a5a2b;border-radius:10px}
+body.gm .page h2{font-family:var(--display,serif);color:#7a2e12}
+body.gm .qtext{font-family:var(--display,serif);color:#3b2a1a}
+body.gm .muted,body.gm .page p.muted{color:#8a5a2b}
+body.gm .badge{color:#8a5a2b;border-color:#c9993f;background:#fbf0d4}
+body.gm .dots i{background:#b99a62;opacity:.55}body.gm .dots i.on{background:#c9993f;opacity:1}
+body.gm .opt{background:#fbf0d4;border-color:#8a5a2b;color:#3b2a1a;box-shadow:0 3px 0 #b99a62}
+body.gm .opt.ok{background:#e1efcf;border-color:#3f7a3a;box-shadow:0 3px 0 #3f7a3a}body.gm .opt.bad{background:#f6d9cf;border-color:#a32d2d;box-shadow:0 3px 0 #a32d2d}
+body.gm .fb{background:#fbf0d4;border-color:#3f7a3a;color:#3b2a1a}body.gm .fb.bad{border-color:#a32d2d;background:#f6d9cf}
+body.gm .cta{background:#5b3a1c;color:#fbe6a8;border:2px solid #c9993f;font-family:var(--display,serif);box-shadow:0 4px 0 #3b2414}
+body.gm .cta:active{transform:translateY(2px);box-shadow:0 2px 0 #3b2414}
+body.gm .tile{background:#fbf0d4;border-color:#8a5a2b;color:#3b2a1a;box-shadow:0 3px 0 #b99a62}body.gm .tile.bad{background:#f6d9cf;border-color:#a32d2d}
+body.gm .built{border-bottom-color:#8a5a2b;color:#7a2e12;font-family:var(--display,serif)}
+body.gm .tfans{background:#fbf0d4;border-color:#c9993f;color:#3b2a1a}
+body.gm .score{color:#7a2e12;font-family:var(--display,serif)}
 </style>
 </head>
 <body data-style="a">
@@ -1565,6 +1583,7 @@ function render(){
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
   if (view.name === "dict") dictAfter();
+  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone"].includes(view.name));
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
 function go(v){ view = v; render(); window.scrollTo(0, 0); }

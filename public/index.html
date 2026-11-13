@@ -251,6 +251,16 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .play span{margin-left:4px}
 .pnext{font-size:.75rem;color:#6b5a48}
 .blurb{margin:14px 2px;font-style:italic}
+
+/* portada del libro: textos como escritos a mano sobre la página */
+.openbook .ptag,.openbook .pright h1,.openbook .plt,.openbook .pnext{font-family:"Kalam","Andika",cursive;color:#4a2f1a;mix-blend-mode:multiply;text-shadow:0 0 1px rgba(74,47,26,.35);text-transform:none;letter-spacing:0}
+.openbook .ptag{font-size:.8rem;font-weight:400;opacity:.8}
+.openbook .pright h1{font-size:1.25rem;font-weight:700;line-height:1.1;opacity:.9}
+.openbook .pstars i{color:rgba(120,90,50,.35);font-size:.8rem}.openbook .pstars i.on{color:#b9770e}
+.openbook .play{width:auto;height:auto;border:0;background:none;box-shadow:none;border-radius:0;color:#4a2f1a;display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 10px;mix-blend-mode:multiply;opacity:.88}
+.openbook .play svg{width:64px;height:32px;stroke:#4a2f1a;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.openbook .plt{font-size:.9rem}
+@media (min-width:480px){.openbook .pright h1{font-size:1.5rem}.openbook .play svg{width:84px;height:42px}.openbook .plt{font-size:1.05rem}.openbook .ptag{font-size:.95rem}}
 @media (min-width:480px){.pright h1{font-size:1.3rem}.play{width:84px;height:84px;font-size:2rem}.pstars i{font-size:1.1rem}.onshelf .cbtitle{font-size:1.1rem}.onshelf .cbtag{font-size:.62rem}}
 
 /* cover and course picker */
@@ -738,7 +748,7 @@ function bookView(b){
       <span class="ptag">${esc(b.subject)} · ${b.course}</span>
       <h1>${esc(b.title)}</h1>
       <p class="pstars" aria-label="${doneN} / ${b.totalChapters}">${stars}</p>
-      <button type="button" class="play" data-act="read" data-id="${b.id}" data-n="${next.n}" aria-label="${t.open}"><span aria-hidden="true">▶</span></button>
+      <button type="button" class="play" data-act="read" data-id="${b.id}" data-n="${next.n}" aria-label="${t.open}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M6 33 C28 24 52 38 84 29 C94 26 102 28 108 30" fill="none"/><path d="M92 14 C100 21 106 26 111 31 C105 37 98 43 90 49" fill="none"/></svg><span class="plt">${t.open}</span></button>
       ${b.album ? "" : `<span class="pnext">${t.chapter} ${next.n}</span>`}
     </div>
   </div>

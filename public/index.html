@@ -747,7 +747,7 @@ function textHtml(ch){
 function readView(b, ch){
   const t = UI[b.lang];
   if (ch.pages) return `
-  <button type="button" class="listen" id="listen" data-act="listen" aria-pressed="false" aria-label="${LISTEN[b.lang]}" ${window.speechSynthesis ? "" : "hidden"}><svg class="i-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-stop" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+  <button type="button" class="listen" id="listen" data-act="listen" aria-pressed="false" aria-label="${LISTEN[b.lang]}" ${window.speechSynthesis || b.album ? "" : "hidden"}><svg class="i-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-stop" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
   <button type="button" class="back arrow" data-act="book" data-id="${b.id}" aria-label="${t.back}">←</button>
   <article class="page reader album" data-g="${gradeOf(b)}" lang="${b.lang}">
     <div id="pager" class="apager"><img id="aimg" class="aimg" alt=""><p id="atext" class="atext"></p></div>
@@ -756,7 +756,7 @@ function readView(b, ch){
     <button type="button" class="cta" data-act="quiz" id="toquiz" hidden>${t.goShort}</button>
   </article>`;
   return `
-  <button type="button" class="listen" id="listen" data-act="listen" aria-pressed="false" aria-label="${LISTEN[b.lang]}" ${window.speechSynthesis ? "" : "hidden"}><svg class="i-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-stop" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
+  <button type="button" class="listen" id="listen" data-act="listen" aria-pressed="false" aria-label="${LISTEN[b.lang]}" ${window.speechSynthesis || b.album ? "" : "hidden"}><svg class="i-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-stop" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
   <button type="button" class="back arrow" data-act="book" data-id="${b.id}" aria-label="${t.back}">←</button>
   <article class="page reader" lang="${b.lang}">
     <div class="pager" id="pager"><div class="flow" id="flow">
@@ -894,11 +894,26 @@ function pickVoice(lang){
 }
 function stopTalk(){
   if (!talk) return;
-  talk = null; synth.cancel();
+  if (talk.a) talk.a.pause();
+  talk = null; if (synth) synth.cancel();
   if (window.CSS && CSS.highlights) CSS.highlights.delete("say");
   const bt = document.getElementById("listen"); if (bt) bt.setAttribute("aria-pressed", "false");
 }
-function say(text, lang, slow, done){
+/* mp3 voices (made by the GitHub workflow) when the page has one; otherwise the device's own voice */
+let AUDIO = {}; const player = new Audio();
+fetch("audio/manifest.json").then(r => r.ok ? r.json() : {}).then(m => { AUDIO = m || {}; }).catch(() => {});
+function say(text, lang, slow, done, key){
+  const T = talk;
+  if (key && AUDIO[key]){
+    T.a = player; player.onended = () => { if (talk === T) done(); };
+    player.onerror = () => { if (talk === T){ T.a = null; deviceSay(text, lang, slow, done); } };
+    player.src = AUDIO[key].f; player.play().catch(() => { if (talk === T){ T.a = null; deviceSay(text, lang, slow, done); } });
+    return;
+  }
+  deviceSay(text, lang, slow, done);
+}
+function deviceSay(text, lang, slow, done){
+  if (!synth) return stopTalk();
   const T = talk, u = new SpeechSynthesisUtterance(text), v = pickVoice(lang);
   u.lang = v ? v.lang : LCODE[lang]; if (v) u.voice = v; u.rate = slow ? .8 : .95;
   u.onend = () => { if (talk === T) done(); };
@@ -932,8 +947,8 @@ function talkStep(){
     if (window.CSS && CSS.highlights && window.Highlight){ const r = document.createRange(); r.selectNodeContents(document.getElementById("atext")); CSS.highlights.set("say", new Highlight(r)); }
     say(ch.pages[view.p].t, b.lang, true, () => {
       if (view.p >= view.pages - 1) return stopTalk();
-      setTimeout(() => { if (talk === T){ view.p++; showPage(); talkStep(); } }, 800);
-    });
+      setTimeout(() => { if (talk === T){ view.dir = 1; view.p++; showPage(); talkStep(); } }, 800);
+    }, `${b.id}-${view.p + 1}`);
     return;
   }
   const u = T.list[T.i]; if (!u) return stopTalk();
@@ -944,14 +959,16 @@ function talkStep(){
 }
 function toggleTalk(){
   if (talk) return stopTalk();
-  if (!synth || view.name !== "read") return;
+  if (view.name !== "read") return;
   const b = book(view.id), ch = b.chapters.find(c => c.n === view.n), msg = document.getElementById("lmsg");
-  if (synth.getVoices().length && !pickVoice(b.lang)){ msg.textContent = NOVOICE[b.lang]; msg.hidden = false; return; }
+  const hasMp3 = !!(ch.pages && AUDIO[`${b.id}-${view.p + 1}`]);
+  if (!hasMp3 && !synth) return;
+  if (!hasMp3 && synth.getVoices().length && !pickVoice(b.lang)){ msg.textContent = NOVOICE[b.lang]; msg.hidden = false; return; }
   msg.hidden = true;
   talk = {i:0};
   if (!ch.pages){ talk.list = sentences(); const at = talk.list.findIndex(u => pageOf(rangeOf(u)) >= view.p); talk.i = at < 0 ? talk.list.length : at; }
   document.getElementById("listen").setAttribute("aria-pressed", "true");
-  synth.cancel(); talkStep();
+  if (synth) synth.cancel(); talkStep();
 }
 if (synth && synth.getVoices) synth.getVoices();
 

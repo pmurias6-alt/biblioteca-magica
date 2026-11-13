@@ -1,0 +1,25 @@
+name: Audio
+on:
+  push:
+    branches: [main]
+    paths: ["public/books/**", "tools/**"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 20}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install edge-tts
+      - run: python tools/make_audio.py
+      - name: Guardar los mp3 en el repositorio
+        run: |
+          git config user.name "audio-bot"
+          git config user.email "audio-bot@users.noreply.github.com"
+          git add public/audio
+          git diff --cached --quiet || (git commit -m "Audio: mp3 actualizados [skip ci]" && git push)

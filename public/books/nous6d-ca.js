@@ -5,6 +5,8 @@ window.NEW6 = (window.NEW6 || []).concat([{
  "subject": "Català",
  "course": "6è",
  "cover": "#2f7f86",
+ "coverImg": "img/ca6-sons-cover.jpg",
+ "coverPos": "30% 50%",
  "motif": "lock",
  "title": "La biblioteca dels sons",
  "blurb": "La Noa descobreix la gravadora de l'avi i, quan la campana del poble s'esquerda, es proposa guardar els sons que fan del seu poble un lloc únic.",

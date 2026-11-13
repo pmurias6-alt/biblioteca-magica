@@ -264,10 +264,10 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .lplank{width:100%;max-width:540px;height:16px;background:#6b4423;border-top:4px solid #c9993f;border-radius:0 0 6px 6px}
 .lall{margin-top:22px;padding:10px 22px;border-radius:99px;border:2px solid #c9993f;background:#5b3a1c;color:#f3d98b;font:700 .95rem var(--display,serif);cursor:pointer}.lall:active{background:#7a4a22}
 .crumb{color:#8a5a2b;font-weight:700;margin:2px 0 10px}
-.gscroll{left:23.2%;top:34.8%;width:53.6%;height:34%;text-align:left;padding:1.2cqw 0}
-.gscroll .gcard{display:flex;gap:2.2cqw;align-items:center;width:100%;margin:0 0 2.2cqw;padding:2cqw 2.4cqw;border:1.5px solid #c9993f;border-left:2.6cqw solid #7a1f1f;border-radius:1cqw 2cqw 2cqw 1cqw;background:#5b3a1c;color:#fbe6a8;font-size:3.4cqw;line-height:1.25;box-shadow:.8cqw .8cqw 0 rgba(0,0,0,.3);text-align:left}
+.gscroll{left:21.2%;top:34.4%;width:57.8%;height:36.6%;text-align:left;padding:1cqw 0}
+.gscroll .gcard{display:flex;gap:2.2cqw;align-items:center;width:100%;margin:0 0 2.2cqw;padding:2.2cqw 2.2cqw;border:1.5px solid #c9993f;border-left:2.4cqw solid #7a1f1f;border-radius:1cqw 2cqw 2cqw 1cqw;background:#5b3a1c;color:#fbe6a8;font-size:3.4cqw;line-height:1.25;box-shadow:.8cqw .8cqw 0 rgba(0,0,0,.3);text-align:left}
 .gscroll .gcard:nth-child(3n+2){border-left-color:#8a5410}.gscroll .gcard:nth-child(3n){border-left-color:#1f4272}
-.gscroll .gic{font-size:6.4cqw;line-height:1}.gscroll .gcard b{font-family:var(--display,serif);font-size:3.8cqw}.gscroll .gcard small{display:block;font-size:2.8cqw;line-height:1.3;color:#e0c58a}
+.gscroll .gic{font-size:6cqw;line-height:1}.gscroll .gcard b{font-family:var(--display,serif);font-size:3.9cqw}.gscroll .gcard small{display:block;font-size:3cqw;line-height:1.3;color:#e0c58a}
 .dicscene{container-type:inline-size}
 .dscroll{position:absolute;left:21.4%;top:32%;width:58%;height:33%;text-align:center;overflow-y:auto;overscroll-behavior:contain;padding:0 2.2cqw 1cqw;line-height:normal;-webkit-mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);scrollbar-width:none;color:#3b2a1a}.dscroll::-webkit-scrollbar{display:none}
 .dscroll .dsec{padding-top:2cqw;scroll-margin-top:0}.dscroll .dsec+.dsec{margin-top:2cqw;border-top:1.5px solid #c9993f}
@@ -1208,7 +1208,7 @@ const GCH = GRADES.map(([g, n]) => [g, n]);
 const LCH = [["all", "Tots"], ...LANGS.map(([l, n]) => [l, n])];
 function dictView(g, l){
   SEL.g = g; SEL.l = l;
-  const pool = wordPool(g, l), age = GRADES[g - 1][1], lname = l === "all" ? "Tots els idiomes" : (LANGS.find(x => x[0] === l) || [, l])[1];
+  const pool = wordPool(g, l), U = uiL(l), age = ageL(l, g), lname = l === "all" ? "Tots els idiomes" : (LANGS.find(x => x[0] === l) || [, l])[1];
   const items = pool.map(x => ({w:WN(x.v.w), def:x.v.def, lang:x.b.lang, age:!!x.b.age, got:!!(x.ch && isDone(x.b.id, x.ch.n))}));
   const L = w => { const c = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()[0] || "#"; return /[A-Z]/.test(c) ? c : "#"; };
   items.sort((a, b) => a.w.localeCompare(b.w, "ca"));
@@ -1221,9 +1221,9 @@ function dictView(g, l){
   <div class="fill contain" style="--r:${572/1024}">
     <div class="scene dicscene">
       <img src="img/dic-fons.jpg" alt="">
-      <div class="dscroll" tabindex="0">${body || '<p class="dd">Encara no hi ha paraules.</p>'}<p class="dleg"><i class="dstar">★</i> paraula bàsica de ${age} &nbsp; <span class="dgot">✓</span> llibre llegit</p></div>
+      <div class="dscroll" tabindex="0">${body || '<p class="dd">${UIX[U].empty}</p>'}<p class="dleg"><i class="dstar">★</i> ${UIX[U].legend(age)} &nbsp; <span class="dgot">✓</span> ${UIX[U].read}</p></div>
       <div class="dstrip" role="group" aria-label="Lletres">${strip}</div>
-      <div class="dinfo">${age} · ${lname} · ${items.length} paraules</div>
+      <div class="dinfo">${age} · ${lname} · ${items.length} ${UIX[U].words}</div>
     </div>
     <button type="button" class="back arrow onimg" data-act="tolang" data-mode="dict" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
   </div>`;
@@ -1442,6 +1442,10 @@ function tfPool(g){
   BOOKS.filter(b => gradeOf(b) === g && (SEL.l === "all" || b.lang === SEL.l)).forEach(b => b.chapters.forEach(ch => (ch.questions || []).forEach(q => { if (q.options.length >= 2) out.push({b, q}); })));
   return out;
 }
+const GTXT = {"bl": {"ca": ["Lletres desordenades", "Posa les lletres en ordre i forma la paraula."], "es": ["Letras desordenadas", "Ordena las letras y forma la palabra."], "en": ["Scrambled letters", "Put the letters in order to make the word."]}, "bw": {"ca": ["Ordena la frase", "Posa les paraules en ordre per poder llegir la frase."], "es": ["Ordena la frase", "Pon las palabras en orden para poder leer la frase."], "en": ["Sentence order", "Put the words in order to read the sentence."]}, "pairs": {"ca": ["Parelles de paraules", "Troba cada paraula amb el seu significat."], "es": ["Parejas de palabras", "Encuentra cada palabra con su significado."], "en": ["Word pairs", "Match each word with its meaning."]}, "words": {"ca": ["Joc de paraules", "Llegeix el significat i tria la paraula."], "es": ["Juego de palabras", "Lee el significado y elige la palabra."], "en": ["Word game", "Read the meaning and pick the word."]}, "cloze": {"ca": ["Completa la frase", "Tria la paraula que falta a la frase d'un llibre."], "es": ["Completa la frase", "Elige la palabra que falta en una frase de un libro."], "en": ["Fill in the gap", "Pick the missing word in a sentence from a book."]}, "tf": {"ca": ["Veritat o mentida", "Decideix si la resposta a la pregunta és correcta."], "es": ["Verdad o mentira", "Decide si la respuesta a la pregunta es correcta."], "en": ["True or false", "Decide if the answer to the question is correct."]}, "order": {"ca": ["Ordena la història", "Posa en ordre els trossos d'una història."], "es": ["Ordena la historia", "Pon en orden los trozos de una historia."], "en": ["Story order", "Put the pieces of a story in order."]}};
+const UIX = {ca:{none:"Encara no hi ha prou llibres en aquest idioma.", legend:(a)=>`paraula bàsica de ${a}`, read:"llibre llegit", words:"paraules", empty:"Encara no hi ha paraules."}, es:{none:"Aún no hay suficientes libros en este idioma.", legend:(a)=>`palabra básica de ${a}`, read:"libro leído", words:"palabras", empty:"Todavía no hay palabras."}, en:{none:"Not enough books in this language yet.", legend:(a)=>`core word for ${a}`, read:"book read", words:"words", empty:"No words yet."}};
+const uiL = l => l === "es" || l === "en" ? l : "ca";
+const ageL = (l, g) => l === "es" ? g + "º" : l === "en" ? "Year " + g : GRADES[g - 1][1];
 const GAMES = [
   {id:"bl", min:1, max:4, ic:"🔤", t:"Lletres desordenades", d:"Posa les lletres en ordre i forma la paraula.", can:g => letterPool(g).length >= 4},
   {id:"bw", min:1, max:3, ic:"🧩", t:"Ordena la frase", d:"Posa les paraules en ordre per poder llegir la frase.", can:g => sentPool(g).length >= 4},
@@ -1452,10 +1456,10 @@ const GAMES = [
   {id:"order", min:3, max:6, ic:"📚", t:"Ordena la història", d:"Posa en ordre els trossos d'una història.", can:g => orderPool(g).length > 0}
 ];
 function gamesView(g, l){
-  SEL.g = g; SEL.l = l; const age = GRADES[g - 1][1];
+  SEL.g = g; SEL.l = l; const U = uiL(l), age = ageL(l, g);
   const list = GAMES.filter(x => g >= x.min && g <= x.max);
   const cards = list.map(x => { const ok = x.can(g);
-    return `<button type="button" class="gcard" data-act="play" data-game="${x.id}" ${ok ? "" : "disabled"}><span class="gic">${x.ic}</span><span><b>${x.t}</b><br><small>${ok ? x.d : "Encara no hi ha prou llibres en aquest idioma."}</small></span></button>`; }).join("");
+    return `<button type="button" class="gcard" data-act="play" data-game="${x.id}" ${ok ? "" : "disabled"}><span class="gic">${x.ic}</span><span><b>${GTXT[x.id][U][0]}</b><br><small>${ok ? GTXT[x.id][U][1] : UI[U].none}</small></span></button>`; }).join("");
   const lname = l === "all" ? "Tots els idiomes" : (LANGS.find(x => x[0] === l) || [, l])[1];
   return `
   <div class="fill contain" style="--r:${572/1024}">

@@ -269,23 +269,17 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .dsign{position:relative;margin:34px auto 26px;padding:12px 34px;background:#7a4a22;border:4px solid #c9993f;border-radius:14px;text-align:center;box-shadow:0 6px 0 #4a2e17,0 12px 20px rgba(0,0,0,.5)}
 .dsign::before,.dsign::after{content:"";position:absolute;top:-34px;width:3px;height:34px;background:#c9993f}.dsign::before{left:26px}.dsign::after{right:26px}
 .dsign h1{font-family:var(--display);font-size:1.7rem;line-height:1.1;color:#fbe6a8;text-shadow:0 2px 3px rgba(0,0,0,.6);letter-spacing:.04em}.dsign p{margin:4px 0 0;color:#e8c98a;font-size:.85rem;font-family:var(--body,sans-serif)}
-.dbook{position:relative;display:flex;border:4px solid #5b3a1c;border-radius:10px;background:#5b3a1c;padding:5px;width:100%;max-width:760px;box-shadow:0 10px 24px rgba(0,0,0,.55)}.dbook.one{max-width:420px}
-.dpg{flex:1;min-width:0;background:#f6e7c6;color:#3b2a1a;padding:28px 22px 36px;min-height:410px;position:relative}
-.dpg.s{border-radius:6px}.dpg.l{border-radius:6px 0 0 6px;border-right:2px solid #b99a62;padding-right:30px}.dpg.r{border-radius:0 6px 6px 0;border-left:2px solid #b99a62;padding-left:30px}
-.dpg.l::after,.dpg.r::before{content:"";position:absolute;top:0;bottom:0;width:18px;background:#e3cf9c;opacity:.7}.dpg.l::after{right:0}.dpg.r::before{left:0}
-.dcap{font-size:2.4rem;line-height:.9;color:#c9993f;font-weight:700;margin-bottom:10px}.drun{font-size:.8rem;letter-spacing:.2em;color:#8a5a2b;border-bottom:1.5px solid #c9993f;padding-bottom:4px;margin-bottom:10px}
-.dent{padding:14px 0;border-bottom:1px dotted #b99a62}.dent:last-of-type{border:0}.dwr{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.dw{font-size:1.2rem;font-weight:700;color:#7a2e12}.dd{margin-top:3px;font-family:var(--body,sans-serif);font-size:.92rem;line-height:1.45;color:#5b4430}
-.dtag{font-size:.6rem;font-family:var(--body,sans-serif);font-weight:700;padding:1px 6px;border-radius:4px;color:#fff}.dtag.ca{background:#a32d2d}.dtag.es{background:#c27a1a}.dtag.en{background:#2f5f9c}
-.dstar{color:#c9993f;font-style:normal;font-size:.95rem}.dgot{color:#2f7d4a;font-family:var(--body,sans-serif);font-weight:700}
-.dnum{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:.8rem;color:#8a5a2b}
-.drib{position:absolute;top:-4px;right:28px;width:30px;height:52px;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;box-sizing:border-box;background:#a32d2d;color:#fff1cf;font:700 .7rem var(--body,sans-serif);clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);z-index:2}
-.dnav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px}.dpos{color:#f3d98b;font-size:.95rem;min-width:84px;text-align:center}
-.dar{width:48px;height:48px;border-radius:50%;border:3px solid #c9993f;background:#5b3a1c;color:#f3d98b;font-size:1.7rem;line-height:1;cursor:pointer;box-shadow:0 3px 0 #3b2414}.dar:active{transform:translateY(2px);box-shadow:0 1px 0 #3b2414}.dar:disabled{opacity:.3}
-.dstrip{display:flex;gap:6px;overflow-x:auto;width:100%;max-width:760px;padding:16px 4px 6px;justify-content:flex-start;-webkit-overflow-scrolling:touch;scrollbar-width:none}.dstrip::-webkit-scrollbar{display:none}
-.dl{flex:none;min-width:38px;height:38px;border-radius:8px;border:2px solid #8a5a2b;background:#5b3a1c;color:#e9cf93;font:700 .95rem var(--body,sans-serif);cursor:pointer}.dl.on{background:#c9993f;color:#3b2414;border-color:#f3d98b}
+.dbook{position:relative;border:4px solid #5b3a1c;border-radius:10px;background:#5b3a1c;padding:5px;width:100%;max-width:640px;box-shadow:0 10px 24px rgba(0,0,0,.55)}
+.dpg{background:#f6e7c6;color:#3b2a1a;padding:10px 20px 18px;border-radius:6px}
+.dsec{padding-top:6px;scroll-margin-top:12px}.dsec+.dsec{margin-top:10px;border-top:2px solid #c9993f}
+.dcap{font-size:2.4rem;line-height:1;color:#c9993f;font-weight:700;padding:10px 0 2px}
+.dent{margin:0;padding:11px 0;border-bottom:1px dotted #b99a62;font-family:var(--body,sans-serif);font-size:1rem;line-height:1.5;color:#5b4430}.dsec .dent:last-child{border-bottom:0}
+.dw{font-family:var(--display,serif);font-size:1.15rem;font-weight:700;color:#7a2e12}.dsep{color:#b99a62}
+.dtag{font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:4px;color:#fff;margin-left:6px;vertical-align:2px}.dtag.ca{background:#a32d2d}.dtag.es{background:#c27a1a}.dtag.en{background:#2f5f9c}
+.dstar{color:#c9993f;font-style:normal;font-size:.95rem;margin-left:5px}.dgot{color:#2f7d4a;font-weight:700;margin-left:5px}
+.dstrip{position:sticky;bottom:10px;z-index:4;display:flex;gap:6px;overflow-x:auto;width:100%;max-width:640px;margin-top:14px;padding:8px 8px;background:rgba(42,22,12,.92);border:2px solid #c9993f;border-radius:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch;box-shadow:0 6px 16px rgba(0,0,0,.5)}.dstrip::-webkit-scrollbar{display:none}
+.dl{flex:none;min-width:40px;height:40px;border-radius:8px;border:2px solid #8a5a2b;background:#5b3a1c;color:#e9cf93;font:700 1rem var(--body,sans-serif);cursor:pointer}.dl.on{background:#c9993f;color:#3b2414;border-color:#f3d98b}
 .dleg{color:#e9cf93;font-size:.78rem;text-align:center;margin:14px 8px 0;font-family:var(--body,sans-serif);line-height:1.6}
-.dshelf{display:flex;gap:3px;align-items:flex-end;height:46px;padding:0 10px;background:#2f1c0d;border-bottom:5px solid #6b4423;position:relative;overflow:hidden}.dshelf i{display:block;width:13px;flex:none;border-radius:2px 2px 0 0}.dlamp{position:absolute;right:18px;top:6px;width:20px;height:24px;background:#ffd36a;border:2px solid #c9993f;border-radius:6px 6px 10px 10px;box-shadow:0 0 18px 6px rgba(255,211,106,.55)}
-.dtop{display:flex;align-items:center;gap:10px;padding:8px 12px;color:#f3d98b;background:#3b2414;border-bottom:2px solid #c9993f}.dtop b{font-weight:500;font-size:1.1rem;letter-spacing:.04em}.dtop span{margin-left:auto;font-size:.8rem;font-family:var(--body,sans-serif)}.dback{background:none;border:0;padding:0;width:44px;height:30px;cursor:pointer;color:#fff}.dback svg{width:100%;height:100%;fill:#f3d98b}
 .dscene>.dshelf,.dscene>.dtop,.dscene>.dlect{align-self:stretch;margin-left:-14px;margin-right:-14px}.dlect{margin-top:auto;height:26px;background:#6b4423;border-top:3px solid #c9993f}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.chip{padding:6px 12px;border-radius:999px;border:2px solid #6b4423;background:#f3e3c3;font:inherit;font-weight:700;font-size:.85rem;color:#4a2f1a;cursor:pointer}.chip.on{background:#6b4423;color:#fff}.gwrap{padding:16px 12px;max-width:560px;width:100%;align-self:center;display:flex;flex-direction:column;gap:10px}.gcard{display:flex;gap:12px;align-items:center;width:100%;padding:12px 14px;border:2px solid #c9993f;border-left:12px solid #7a1f1f;border-radius:5px 10px 10px 5px;background:#5b3a1c;text-align:left;font:inherit;color:#fbe6a8;cursor:pointer;box-shadow:4px 4px 0 rgba(0,0,0,.35);transition:transform .15s}.gcard:nth-child(3n+2){border-left-color:#8a5410}.gcard:nth-child(3n){border-left-color:#1f4272}.gcard:hover,.gcard:focus-visible{transform:translateX(4px)}.gcard:disabled{opacity:.5}.gic{font-size:2rem}.gcard small{color:#e0c58a}.dgroup.age h3{background:#fff1c9;padding:4px 8px;border-radius:6px}.dgroup dt.got::after{content:" ✓";color:#2f7d4a}.gotkey{color:#2f7d4a;font-weight:700}.tiles{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.tile{min-width:44px;min-height:48px;padding:8px 12px;border:2px solid #4a6fa5;border-radius:10px;background:#fff;font:inherit;font-size:1.2rem;font-weight:700;color:#2a2a3a}.tile.used{opacity:.25}.tile.bad{background:#fde0dc;border-color:#c0392b}.built{min-height:54px;margin-top:8px;padding:8px;border-bottom:3px dashed #6b4423;font-size:1.5rem;font-weight:700;letter-spacing:.06em}.tfans{margin:12px 0 2px;padding:12px;border-radius:12px;background:#e8f0ff;border:2px solid #4a6fa5;font-size:1.1rem;font-weight:700}.opts.tf{display:flex;gap:10px}.opts.tf .opt{flex:1;text-align:center}.tojoc.l{right:66px}.tojoc{position:absolute;z-index:6;top:12px;right:12px;padding:7px 14px;border-radius:999px;border:2px solid #6b4423;background:rgba(255,245,215,.92);color:#4a2f1a;font:700 .8rem/1 var(--ui,inherit);box-shadow:0 2px 6px rgba(0,0,0,.4);cursor:pointer}.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.pcard{min-height:78px;padding:8px;border:2px solid #5b4a3a;border-radius:12px;background:#f3e3c3;font:inherit;font-size:.95rem;line-height:1.2;color:#3b2a1a}.pcard.up{background:#fff8e6;border-color:#4a6fa5}.pcard.w.up{font-weight:700;background:#e8f0ff}.pcard.ok{background:#e4f5e0;border-color:#2f7d4a}.dlang{margin:22px 0 0;padding:6px 12px;border-radius:10px;color:#fff;font-size:1.15rem;letter-spacing:.12em;text-transform:uppercase}.dlang small{float:right;opacity:.85;font-size:.8rem}.dlang[data-l=ca]{background:#b3283f}.dlang[data-l=es]{background:#c58a12}.dlang[data-l=en]{background:#2d63c0}.onum{display:inline-grid;place-items:center;width:1.5em;height:1.5em;margin-right:.5em;border-radius:50%;background:#2f7d4a;color:#fff;font-size:.85em}.dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
 .below.rf .cta+.cta{margin-top:10px}
@@ -1183,38 +1177,30 @@ const ARR = '<svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V2
 function chipsRow(act, cur, items){ return `<div class="chips">${items.map(([v, n]) => `<button type="button" class="chip${String(v) === String(cur) ? " on" : ""}" data-act="${act}" data-v="${v}">${esc(n)}</button>`).join("")}</div>`; }
 const GCH = GRADES.map(([g, n]) => [g, n]);
 const LCH = [["all", "Tots"], ...LANGS.map(([l, n]) => [l, n])];
-const DPAGE = 3;
-const dSingle = () => window.innerWidth < 700;
-function dictView(g, l, sp){
-  SEL.g = g; SEL.l = l; sp = sp || 0;
+function dictView(g, l){
+  SEL.g = g; SEL.l = l;
   const pool = wordPool(g, l), age = GRADES[g - 1][1], lname = l === "all" ? "Tots els idiomes" : (LANGS.find(x => x[0] === l) || [, l])[1];
   const items = pool.map(x => ({w:WN(x.v.w), def:x.v.def, lang:x.b.lang, age:!!x.b.age, got:!!(x.ch && isDone(x.b.id, x.ch.n))}));
   const L = w => { const c = w.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()[0] || "#"; return /[A-Z]/.test(c) ? c : "#"; };
   items.sort((a, b) => a.w.localeCompare(b.w, "ca"));
   const by = {}; items.forEach(it => (by[L(it.w)] = by[L(it.w)] || []).push(it));
-  const letters = Object.keys(by).sort(), pages = [];
-  letters.forEach(c => { for (let k = 0; k < by[c].length; k += DPAGE) pages.push({c, first:k === 0, list:by[c].slice(k, k + DPAGE)}); });
-  const single = dSingle(), step = single ? 1 : 2;
-  sp = Math.min(Math.max(0, sp), Math.max(0, pages.length - 1)); if (!single) sp -= sp % 2;
-  const first = {}; pages.forEach((p, i) => { if (p.first) first[p.c] = i; });
-  const cur = pages[sp] ? pages[sp].c : "";
+  const letters = Object.keys(by).sort();
   const tag = it => l === "all" ? `<span class="dtag ${it.lang}">${it.lang.toUpperCase()}</span>` : "";
-  const pg = (p, n, side) => !p ? `<div class="dpg ${side}"><div class="dnum">${n}</div></div>` : `<div class="dpg ${side}" lang="${p.list[0].lang}">
-      ${p.first ? `<div class="dcap">${p.c}</div>` : `<div class="drun">${p.c}</div>`}
-      ${p.list.map(it => `<div class="dent"><div class="dwr"><span class="dw">${esc(it.w)}</span>${tag(it)}${it.age ? `<i class="dstar" title="Paraula bàsica d'aquesta edat">★</i>` : ""}${it.got ? `<span class="dgot">✓</span>` : ""}</div><div class="dd">${esc(it.def)}</div></div>`).join("")}
-      <div class="dnum">${n}</div></div>`;
-  const strip = letters.map(c => `<button type="button" class="dl${c === cur ? " on" : ""}" data-act="dsp" data-i="${first[c]}">${c}</button>`).join("");
-  const last = Math.max(0, pages.length - 1);
+  const body = letters.map(c => `<section class="dsec" id="dL-${c}" data-c="${c}"><div class="dcap">${c}</div>${by[c].map(it => `<p class="dent" lang="${it.lang}"><span class="dw">${esc(it.w)}</span>${tag(it)}${it.age ? `<i class="dstar" title="Paraula bàsica d'aquesta edat">★</i>` : ""}${it.got ? `<span class="dgot">✓</span>` : ""} <span class="dsep">—</span> <span class="dd">${esc(it.def)}</span></p>`).join("")}</section>`).join("");
+  const strip = letters.map(c => `<button type="button" class="dl" data-act="dgo" data-c="${c}">${c}</button>`).join("");
   return `
   <div class="dscene">
     <button type="button" class="dback" data-act="tolang" data-mode="dict" aria-label="Enrere">${ARR}</button>
-    <div class="dsign"><h1>Diccionari</h1><p>${age} · ${lname}</p></div>
-    ${pages.length ? `<div class="dbook${single ? " one" : ""}"><span class="drib" style="--c:#c9993f">${age}</span>${pg(pages[sp], sp + 1, single ? "s" : "l")}${single ? "" : pg(pages[sp + 1], sp + 2, "r")}</div>
-    <div class="dnav"><button type="button" class="dar" data-act="dsp" data-i="${sp - step}" ${sp ? "" : "disabled"} aria-label="Pàgina anterior">‹</button><span class="dpos">${sp + 1}${single ? "" : "–" + Math.min(sp + 2, pages.length)} / ${pages.length}</span><button type="button" class="dar" data-act="dsp" data-i="${sp + step}" ${sp + step <= last ? "" : "disabled"} aria-label="Pàgina següent">›</button></div>
+    <div class="dsign"><h1>Diccionari</h1><p>${age} · ${lname} · ${items.length} paraules</p></div>
+    <div class="dbook one"><div class="dpg s">${body || '<p class="dd">Encara no hi ha paraules.</p>'}</div></div>
+    <p class="dleg"><i class="dstar">★</i> paraula bàsica de ${age} &nbsp; <span class="dgot">✓</span> llibre llegit</p>
     <div class="dstrip" role="group" aria-label="Lletres">${strip}</div>
-    <p class="dleg"><i class="dstar">★</i> paraula bàsica de ${age} &nbsp; <span class="dgot">✓</span> llibre llegit</p>`
-    : `<div class="dbook one"><div class="dpg s"><p class="dd">Encara no hi ha paraules.</p></div></div>`}
   </div>`;
+}
+function dictAfter(){
+  const strip = document.querySelector(".dstrip"); if (!strip || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting){ strip.querySelectorAll(".dl").forEach(b => b.classList.toggle("on", b.dataset.c === e.target.dataset.c)); const on = strip.querySelector(".dl.on"); if (on) on.scrollIntoView({inline:"center", block:"nearest"}); } }); }, {rootMargin:"-20% 0px -70% 0px"});
+  document.querySelectorAll(".dsec").forEach(x => io.observe(x));
 }
 function startWords(g){
   const pool = wordPool(g), items = [];
@@ -1558,12 +1544,13 @@ function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all", view.sp) : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
+  if (view.name === "dict") dictAfter();
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
 function go(v){ view = v; render(); window.scrollTo(0, 0); }
@@ -1634,7 +1621,7 @@ document.addEventListener("click", e => {
   else if (a === "pickback") go({name:"pick", mode:el.dataset.mode});
   else if (a === "tolang") go({name:"lang", mode:el.dataset.mode, g:SEL.g});
   else if (a === "dictg") go({name:"dict", g:+el.dataset.v, l:SEL.l});
-  else if (a === "dsp"){ view.sp = Math.max(0, +el.dataset.i); render(); }
+  else if (a === "dgo"){ const t = document.getElementById("dL-" + el.dataset.c); if (t) t.scrollIntoView({behavior:"smooth", block:"start"}); }
   else if (a === "gamesg") go({name:"games", g:+el.dataset.v, l:SEL.l});
   else if (a === "gamesl") go({name:"games", g:SEL.g, l:el.dataset.v});
   else if (a === "play") play(el.dataset.game);

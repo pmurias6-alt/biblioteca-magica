@@ -255,16 +255,16 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 
 /* flecha de volver dibujada a mano */
 .back.arrow svg{width:46px;height:23px;stroke:currentColor;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;display:block;margin:auto}
-.back.arrow.onimg{background:none;border:0;box-shadow:none;color:#ffe9b0;filter:drop-shadow(0 0 5px rgba(255,200,90,.75)) drop-shadow(0 1px 2px rgba(0,0,0,.6));display:flex;align-items:center;justify-content:center;width:56px;height:48px;transition:transform .15s}
+.back.arrow.onimg{background:none;border:0;box-shadow:none;color:#6b4423;filter:drop-shadow(0 0 1.5px #fff1c9) drop-shadow(0 0 2px #fff1c9) drop-shadow(0 0 6px rgba(255,214,130,.7));display:flex;align-items:center;justify-content:center;width:56px;height:48px;transition:transform .15s}
 .back.arrow.onimg:active{transform:translateX(-4px)}
-.back.arrow:not(.onimg){color:#6b4a2a;display:flex;align-items:center}
+.back.arrow:not(.onimg){color:#6b4423;filter:drop-shadow(0 0 3px rgba(255,236,190,.7));display:flex;align-items:center}
 /* portada del libro: textos como escritos a mano sobre la página */
 .openbook .ptag,.openbook .pright h1,.openbook .plt,.openbook .pnext{font-family:"Kalam","Andika",cursive;color:#4a2f1a;mix-blend-mode:multiply;text-shadow:0 0 1px rgba(74,47,26,.35);text-transform:none;letter-spacing:0}
 .openbook .ptag{font-size:.8rem;font-weight:400;opacity:.8}
 .openbook .pright h1{font-size:1.25rem;font-weight:700;line-height:1.1;opacity:.9}
 .openbook .pstars i{color:rgba(120,90,50,.35);font-size:.8rem}.openbook .pstars i.on{color:#b9770e}
 .openbook .play{width:auto;height:auto;border:0;background:none;box-shadow:none;border-radius:0;color:#4a2f1a;display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 10px;mix-blend-mode:multiply;opacity:.88}
-.openbook .play svg{width:64px;height:32px;stroke:#4a2f1a;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.openbook .play svg{width:64px;height:32px;stroke:#6b4423;filter:drop-shadow(0 0 3px rgba(255,236,190,.8));stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
 .openbook .plt{font-size:.9rem}
 @media (min-width:480px){.openbook .pright h1{font-size:1.5rem}.openbook .play svg{width:84px;height:42px}.openbook .plt{font-size:1.05rem}.openbook .ptag{font-size:.95rem}}
 @media (min-width:480px){.pright h1{font-size:1.3rem}.play{width:84px;height:84px;font-size:2rem}.pstars i{font-size:1.1rem}.onshelf .cbtitle{font-size:1.1rem}.onshelf .cbtag{font-size:.62rem}}
@@ -703,7 +703,7 @@ function coursesView(){
       ${[[77.3,15],[62.6,11.9],[48.3,11.9],[33.8,12.5],[19.2,12.6],[4.3,12.9]].map(([top, hh], i) => { const g = i + 1, n = BOOKS.filter(b => gradeOf(b) === g).length;
         return `<button type="button" class="hot" style="top:${top}%;height:${hh}%" ${n ? `data-act="shelf" data-g="${g}"` : "disabled"} aria-label="${GRADES[i][1]}${n ? "" : ": aviat"}">${n ? "" : "<span>Aviat</span>"}</button>`; }).join("")}
     </div>
-    <button type="button" class="back arrow onimg" data-act="cover" aria-label="Enrere"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M114 33 C92 24 68 38 36 29 C26 26 18 28 12 30" fill="none"/><path d="M28 14 C20 21 14 26 9 31 C15 37 22 43 30 49" fill="none"/></svg></button>
+    <button type="button" class="back arrow onimg" data-act="cover" aria-label="Enrere"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M12 30 H112" fill="none"/><path d="M32 12 L12 30 L32 48" fill="none"/></svg></button>
   </div>`;
 }
 const ROOMS = {1:"img/room-1.jpg", 2:"img/room-2.jpg", 6:"img/room-6.jpg"};
@@ -714,7 +714,7 @@ function shelfView(g){
   return `
   <h1 class="vh">Llibres de ${label}</h1>
   <div class="fill" style="--r:${9/16}">
-  <button type="button" class="back arrow onimg" data-act="courses" aria-label="Enrere"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M114 33 C92 24 68 38 36 29 C26 26 18 28 12 30" fill="none"/><path d="M28 14 C20 21 14 26 9 31 C15 37 22 43 30 49" fill="none"/></svg></button>
+  <button type="button" class="back arrow onimg" data-act="courses" aria-label="Enrere"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M12 30 H112" fill="none"/><path d="M32 12 L12 30 L32 48" fill="none"/></svg></button>
   <div class="scene room">
     <img src="${ROOMS[g] || ROOMS[1]}" alt="La sala de lectura de ${label}, amb un prestatge llarg.">
     <ul class="onshelf" data-g="${g}">
@@ -746,7 +746,7 @@ function bookView(b){
   for (let n = 1; n <= b.totalChapters; n++) stars += `<i class="${isDone(b.id, n) ? "on" : ""}">★</i>`;
   return `
   <div class="fill" style="--r:${9/16}">
-  <button type="button" class="back arrow onimg" data-act="home" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M114 33 C92 24 68 38 36 29 C26 26 18 28 12 30" fill="none"/><path d="M28 14 C20 21 14 26 9 31 C15 37 22 43 30 49" fill="none"/></svg></button>
+  <button type="button" class="back arrow onimg" data-act="home" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M12 30 H112" fill="none"/><path d="M32 12 L12 30 L32 48" fill="none"/></svg></button>
   <div class="scene openbook" lang="${b.lang}">
     <img src="img/open.jpg" alt="">
     <div class="pleft">${art(b)}</div>
@@ -754,7 +754,7 @@ function bookView(b){
       <span class="ptag">${esc(b.subject)} · ${b.course}</span>
       <h1>${esc(b.title)}</h1>
       <p class="pstars" aria-label="${doneN} / ${b.totalChapters}">${stars}</p>
-      <button type="button" class="play" data-act="read" data-id="${b.id}" data-n="${next.n}" aria-label="${t.open}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M6 33 C28 24 52 38 84 29 C94 26 102 28 108 30" fill="none"/><path d="M92 14 C100 21 106 26 111 31 C105 37 98 43 90 49" fill="none"/></svg><span class="plt">${t.open}</span></button>
+      <button type="button" class="play" data-act="read" data-id="${b.id}" data-n="${next.n}" aria-label="${t.open}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M8 30 H108" fill="none"/><path d="M88 12 L108 30 L88 48" fill="none"/></svg><span class="plt">${t.open}</span></button>
       ${b.album ? "" : `<span class="pnext">${t.chapter} ${next.n}</span>`}
     </div>
   </div>
@@ -781,7 +781,7 @@ function readView(b, ch){
   const t = UI[b.lang];
   if (ch.pages) return `
   <button type="button" class="listen" id="listen" data-act="listen" aria-pressed="false" aria-label="${LISTEN[b.lang]}" ${window.speechSynthesis || b.album ? "" : "hidden"}><svg class="i-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-stop" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
-  <button type="button" class="back arrow" data-act="book" data-id="${b.id}" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M114 33 C92 24 68 38 36 29 C26 26 18 28 12 30" fill="none"/><path d="M28 14 C20 21 14 26 9 31 C15 37 22 43 30 49" fill="none"/></svg></button>
+  <button type="button" class="back arrow" data-act="book" data-id="${b.id}" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M12 30 H112" fill="none"/><path d="M32 12 L12 30 L32 48" fill="none"/></svg></button>
   <article class="page reader album" data-g="${gradeOf(b)}" lang="${b.lang}">
     <div id="pager" class="apager"><img id="aimg" class="aimg" alt=""><p id="atext" class="atext"></p></div>
     <p class="lmsg" id="lmsg" hidden role="status"></p>
@@ -790,7 +790,7 @@ function readView(b, ch){
   </article>`;
   return `
   <button type="button" class="listen" id="listen" data-act="listen" aria-pressed="false" aria-label="${LISTEN[b.lang]}" ${window.speechSynthesis || b.album ? "" : "hidden"}><svg class="i-play" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><svg class="i-stop" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg></button>
-  <button type="button" class="back arrow" data-act="book" data-id="${b.id}" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M114 33 C92 24 68 38 36 29 C26 26 18 28 12 30" fill="none"/><path d="M28 14 C20 21 14 26 9 31 C15 37 22 43 30 49" fill="none"/></svg></button>
+  <button type="button" class="back arrow" data-act="book" data-id="${b.id}" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M12 30 H112" fill="none"/><path d="M32 12 L12 30 L32 48" fill="none"/></svg></button>
   <article class="page reader" lang="${b.lang}">
     <div class="pager" id="pager"><div class="flow" id="flow">
       ${ch.image ? `<img class="chimg" src="${ch.image}" alt="${esc(ch.imageAlt)}">` : ""}
@@ -1048,7 +1048,7 @@ function rfView(){
   if (z.answered){ const o = q.options[z.answered.i];
     fb = `<div class="fb ${o.ok ? "" : "bad"}" role="status"><strong>${o.ok ? t.right : t.wrong}</strong>${esc(o.why)}${o.ok ? "" : `<span class="again">${t.again}</span>`}</div><button type="button" class="cta" data-act="rfnext">${t.next}</button>`; }
   return `
-  <button type="button" class="back arrow" data-act="shelf" data-g="${view.g}" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M114 33 C92 24 68 38 36 29 C26 26 18 28 12 30" fill="none"/><path d="M28 14 C20 21 14 26 9 31 C15 37 22 43 30 49" fill="none"/></svg></button>
+  <button type="button" class="back arrow" data-act="shelf" data-g="${view.g}" aria-label="${t.back}"><svg viewBox="0 0 120 60" aria-hidden="true"><path d="M12 30 H112" fill="none"/><path d="M32 12 L12 30 L32 48" fill="none"/></svg></button>
   <section class="page${b.album ? " big" : ""}" lang="${b.lang}">
     <div class="dots" aria-hidden="true">${dots}</div>
     <span class="badge">${esc(b.title)} · ${t.types[q.type]}</span>

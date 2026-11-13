@@ -255,6 +255,17 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 
 .dict h2{margin-bottom:4px}.dgroup{margin-top:18px}.dgroup h3{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--wood);padding-bottom:4px}.dgroup dt{font-weight:700;margin-top:12px}.dgroup dd{margin:2px 0 0;color:var(--muted,#5b4a3a)}
 .below.rf .cta+.cta{margin-top:10px}
+
+/* varias baldas por curso: una por idioma, con deslizamiento horizontal */
+.shelves{overflow:hidden;position:absolute;left:3%;right:3%;top:26.5%;bottom:2%;display:flex;flex-direction:column;background:linear-gradient(90deg,#2b170c,#3a2112 6%,#2a160b 94%,#1d0f07);border:3px solid #5b3a1c;border-radius:10px 10px 4px 4px;box-shadow:inset 0 0 30px rgba(0,0,0,.65),0 6px 18px rgba(0,0,0,.5);line-height:normal}
+.srow{flex:1 1 0;min-height:0;position:relative;display:flex;align-items:flex-end;padding-bottom:3.5%;border-bottom:7px solid #7a4a22;box-shadow:0 5px 8px -3px rgba(0,0,0,.7);background:radial-gradient(ellipse at 50% 100%,rgba(255,190,100,.12),transparent 70%)}
+.srow:last-child{border-bottom-width:9px}
+.onshelf.multi{position:relative;left:auto;right:auto;bottom:auto;width:100%;height:88%;padding:0 5%;gap:3%;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.onshelf.multi::-webkit-scrollbar{display:none}
+.onshelf.multi li{scroll-snap-align:center}
+.onshelf.multi li:first-child{margin-left:auto}.onshelf.multi li:last-child{margin-right:auto}
+.onshelf.multi .plate{height:30%}.onshelf.multi .cbtitle{font-size:.72rem;padding:1% 6% 5% 14%}.onshelf.multi .cbtag{font-size:.42rem;padding-top:7%}.onshelf.multi li{transform:none!important}.onshelf.multi li:nth-child(even){transform:rotate(.7deg)!important}
+.slabel{position:absolute;left:8px;bottom:-5px;font-family:var(--display);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:#e8c877;opacity:.85;text-shadow:0 1px 1px rgba(0,0,0,.8);pointer-events:none}
 /* flecha de volver dibujada a mano */
 .back.arrow svg{width:38px;height:27px;fill:#fff;stroke:#6b4423;stroke-width:3;stroke-linejoin:round;display:block;margin:auto}
 .back.arrow.onimg{background:none;border:0;box-shadow:none;color:#6b4423;filter:drop-shadow(0 0 5px rgba(255,236,190,.65)) drop-shadow(0 1px 2px rgba(0,0,0,.45));display:flex;align-items:center;justify-content:center;width:56px;height:48px;transition:transform .15s}
@@ -714,6 +725,14 @@ function coursesView(){
 const ROOMS = {1:"img/room-1.jpg", 2:"img/room-2.jpg", 6:"img/room-6.jpg"};
 const THREADS = ["#ff7a5c","#ffd447","#86e07a","#62ccff","#ff9fe0","#ffab45"];
 function stitch(t){ return t.split(" ").map((w, i) => `<span class="w">${esc(w)}</span>`).join(" "); }
+function spine(b){ const done = (saved.done[b.id]||[]).length >= b.totalChapters;
+  return `<li data-l="${b.lang}"><button type="button" class="cb" data-act="book" data-id="${b.id}" aria-label="${esc(b.subject)}: ${esc(b.title)}"><span class="cbtag">${esc(b.subject)}</span><span class="plate">${art(b)}</span><span class="cbtitle"><span>${stitch(b.title)}</span></span></button>${done ? '<span class="star" aria-hidden="true">★</span>' : ""}</li>`; }
+const LANGS = [["ca","Català"],["es","Castellano"],["en","English"]];
+function shelves(g, list){
+  if (list.length <= 4) return `<ul class="onshelf" data-g="${g}">${list.map(spine).join("")}</ul>`;
+  const rows = LANGS.map(([l, n]) => [l, n, list.filter(b => b.lang === l)]).filter(r => r[2].length);
+  return `<div class="shelves" style="--n:${rows.length}">${rows.map(([l, n, bs]) => `<div class="srow"><ul class="onshelf multi" data-g="${g}" aria-label="${n}" tabindex="0">${bs.map(spine).join("")}</ul><span class="slabel">${n}${bs.length > 4 ? " ›" : ""}</span></div>`).join("")}</div>`;
+}
 function shelfView(g){
   const list = BOOKS.filter(b => gradeOf(b) === g), m = saved.miss, label = GRADES.find(x => x[0] === g)[1];
   return `
@@ -722,10 +741,7 @@ function shelfView(g){
   <button type="button" class="back arrow onimg" data-act="courses" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
   <div class="scene room">
     <img src="${ROOMS[g] || ROOMS[1]}" alt="La sala de lectura de ${label}, amb un prestatge llarg.">
-    <ul class="onshelf" data-g="${g}">
-      ${list.map(b => { const done = (saved.done[b.id]||[]).length >= b.totalChapters;
-        return `<li data-l="${b.lang}"><button type="button" class="cb" data-act="book" data-id="${b.id}" aria-label="${esc(b.subject)}: ${esc(b.title)}"><span class="cbtag">${esc(b.subject)}</span><span class="plate">${art(b)}</span><span class="cbtitle"><span>${stitch(b.title)}</span></span></button>${done ? '<span class="star" aria-hidden="true">★</span>' : ""}</li>`; }).join("")}
-    </ul>
+    ${shelves(g, list)}
   </div>
   </div>
   ${rfPool(g).length || wordPool(g).length ? `<div class="below rf">${rfPool(g).length ? `<button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button>` : ""}${wordPool(g).length >= 4 ? `<button type="button" class="cta" data-act="words" data-g="${g}">Joc de paraules</button>` : ""}${wordPool(g).length ? `<button type="button" class="cta" data-act="dict" data-g="${g}">Les meves paraules</button>` : ""}</div>` : ""}

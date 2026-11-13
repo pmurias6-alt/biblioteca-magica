@@ -22,4 +22,4 @@ jobs:
           git config user.name "audio-bot"
           git config user.email "audio-bot@users.noreply.github.com"
           git add public/audio
-          git diff --cached --quiet || (git commit -m "Audio: mp3 actualizados [skip ci]" && git push)
+          git diff --cached --quiet || (git commit -m "Audio: mp3 actualizados [skip ci]" && git pull --rebase origin main && git push)

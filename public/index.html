@@ -268,6 +268,14 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .gscroll .gcard{display:flex;gap:2.2cqw;align-items:center;width:100%;margin:0;flex:none;padding:3cqw 2.2cqw;border:1.5px solid #c9993f;border-left:2.4cqw solid #7a1f1f;border-radius:1cqw 2cqw 2cqw 1cqw;background:#5b3a1c;color:#fbe6a8;font-size:3.8cqw;line-height:1.25;box-shadow:.8cqw .8cqw 0 rgba(0,0,0,.3);text-align:left}
 .gscroll .gcard:nth-child(3n+2){border-left-color:#8a5410}.gscroll .gcard:nth-child(3n){border-left-color:#1f4272}
 .gscroll .gic{font-size:7cqw;line-height:1}.gscroll .gcard b{font-family:var(--display,serif);font-size:4.5cqw}.gscroll .gcard small{display:block;font-size:3.3cqw;line-height:1.3;color:#e0c58a}
+.avi{width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid #c9993f;background:#2a160c;display:block}
+.prof{text-align:center;padding:22px 18px 26px}.prof h2{margin-bottom:14px}.plist{list-style:none;margin:0 0 6px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px}
+.plist li{position:relative}.pcard{width:100%;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border:2px solid #8a5a2b;border-radius:14px;background:#fbf0d4;color:#3b2a1a;font:inherit;cursor:pointer;box-shadow:0 3px 0 #b99a62}.pcard .avi{width:84px;height:84px}.pcard b{font-family:var(--display,serif);font-size:1.05rem;overflow-wrap:anywhere}
+.pdel{position:absolute;top:-6px;right:-4px;width:26px;height:26px;border-radius:50%;border:1.5px solid #8a5a2b;background:#f6d9cf;color:#7a2e12;font-size:.8rem;line-height:1;cursor:pointer;padding:0}
+.pq{font-family:var(--display,serif);color:#7a2e12;font-size:1.05rem;margin:18px 0 8px}.pname{width:100%;max-width:320px;padding:12px 14px;border:2px solid #8a5a2b;border-radius:12px;background:#fffaf0;color:#3b2a1a;font:700 1.15rem var(--display,serif);text-align:center}
+.avpick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}.avpick button{padding:3px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;aspect-ratio:1}.avpick button[aria-pressed="true"]{border-color:#ffd447;box-shadow:0 0 0 3px #7a2e12,0 0 18px rgba(255,211,106,.9)}.avpick .avi{border-width:2px}
+.plink{display:block;margin:16px auto 0;background:none;border:0;color:#7a2e12;font:700 .95rem var(--display,serif);text-decoration:underline;cursor:pointer}
+.pchip{position:absolute;z-index:6;top:76px;right:8px;display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:99px;border:2px solid #c9993f;background:rgba(42,22,12,.78);color:#f3d98b;font:700 .85rem var(--display,serif);cursor:pointer}.pchip .avi{width:34px;height:34px;border-width:2px}
 .dicscene{container-type:inline-size}
 .dscroll{position:absolute;left:13.5%;top:27%;width:73%;height:40%;text-align:center;overflow-y:auto;overscroll-behavior:contain;padding:0 2.2cqw 1cqw;line-height:normal;-webkit-mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);mask-image:linear-gradient(transparent 0,#000 3%,#000 93%,transparent 100%);scrollbar-width:none;color:#3b2a1a}.dscroll::-webkit-scrollbar{display:none}
 .dscroll .dsec{padding-top:2cqw;scroll-margin-top:0}.dscroll .dsec+.dsec{margin-top:2cqw;border-top:1.5px solid #c9993f}
@@ -775,12 +783,26 @@ const art = b => b.coverImg ? `<img src="${b.coverImg}" alt="" style="object-pos
 
 /* ---------- state (saved on this device only) ---------- */
 const KEY = "biblioteca-magica-proto";
-let saved = {style:"d", done:{}, miss:{literal:0, vocab:0, infer:0}, size:1};
-try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) saved = Object.assign(saved, s); } catch(e){}
-saved.style = "d"; saved.hit = saved.hit || {};
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch(e){} }
+const PKEY = "biblioteca-magica-lectors";
+let P = {active:null, list:[]};
+try { const p = JSON.parse(localStorage.getItem(PKEY)); if (p && Array.isArray(p.list)) P = p; } catch(e){}
+const keyFor = id => id === "p1" ? KEY : KEY + ":" + id;
+const freshSaved = () => ({style:"d", done:{}, miss:{literal:0, vocab:0, infer:0}, size:1, hit:{}, gs:{}});
+let saved = freshSaved();
+function loadSaved(){
+  saved = freshSaved();
+  if (P.active){ try { const s = JSON.parse(localStorage.getItem(keyFor(P.active))); if (s) Object.assign(saved, s); } catch(e){} }
+  saved.style = "d"; saved.hit = saved.hit || {}; saved.gs = saved.gs || {};
+  document.documentElement.style.setProperty("--read-size", SIZES[saved.size] || "1.125rem");
+}
+function saveP(){ try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch(e){} }
+function save(){ if (!P.active) return; try { localStorage.setItem(keyFor(P.active), JSON.stringify(saved)); } catch(e){} }
+const curP = () => P.list.find(x => x.id === P.active);
+function gsRec(g, ok){ const a = (saved.gs[g] = saved.gs[g] || []); a.push(ok ? 1 : 0); if (a.length > 20) a.shift(); }
+function lvl(g){ const a = saved.gs[g] || []; if (a.length < 8) return 0; const r = a.reduce((x, y) => x + y, 0) / a.length; return r < .55 ? -1 : r >= .9 ? 1 : 0; }
 let view = {name:"home"};
 const SIZES = ["1rem","1.125rem","1.3rem","1.5rem"];
+loadSaved();
 
 const app = document.getElementById("app");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -807,6 +829,23 @@ function home(){
     <div class="scene photo"><img src="img/hero.jpg" alt="Biblioteca màgica. En Punt, l'aprenent de bibliotecari, diu: Hola! Soc en Punt. Tria un llibre i comença l'aventura!"></div>
   </div>`;
 }
+const AVN = 6;
+function profileView(){
+  const adding = view.adding || !P.list.length;
+  const list = P.list.length ? `<ul class="plist">${P.list.map(x => `<li><button type="button" class="pcard" data-act="pent" data-id="${x.id}"><img class="avi" src="img/av-${x.av}.jpg" alt=""><b>${esc(x.name)}</b></button><button type="button" class="pdel" data-act="pdel" data-id="${x.id}" aria-label="Esborrar ${esc(x.name)}">✕</button></li>`).join("")}</ul>` : "";
+  const form = `<h3 class="pq">Com et dius?</h3><input id="pname" class="pname" maxlength="14" autocomplete="off" placeholder="El teu nom" value="">
+    <h3 class="pq">Tria el teu company</h3>
+    <div class="avpick">${Array.from({length:AVN}, (_, i) => `<button type="button" data-act="pav" data-i="${i + 1}" aria-pressed="${(view.av || 1) === i + 1}" aria-label="Company ${i + 1}"><img class="avi" src="img/av-${i + 1}.jpg" alt=""></button>`).join("")}</div>
+    <button type="button" class="cta" data-act="pmake">Començar l'aventura</button>`;
+  return `
+  <div class="page prof">
+    <h2>${P.list.length && !adding ? "Qui llegeix avui?" : "Benvingut a la biblioteca!"}</h2>
+    ${list}
+    ${adding ? form : `<button type="button" class="cta" data-act="pnew">+ Nou lector</button>`}
+    ${P.active && curP() ? `<button type="button" class="plink" data-act="courses">← Tornar a la torre</button>` : ""}
+  </div>`;
+}
+function chipHTML(){ const c = curP(); return c ? `<button type="button" class="pchip" data-act="profile" aria-label="Canviar de lector: ${esc(c.name)}"><img class="avi" src="img/av-${c.av}.jpg" alt=""><span>${esc(c.name)}</span></button>` : ""; }
 function coursesView(){
   return `
   <div id="swipe" class="fill titled" style="--r:${9/16}">
@@ -817,7 +856,7 @@ function coursesView(){
         return `<button type="button" class="hot" style="top:${top}%;height:${hh}%" ${n ? `data-act="shelf" data-g="${g}"` : "disabled"} aria-label="${GRADES[i][1]}${n ? "" : ": aviat"}">${n ? "" : "<span>Aviat</span>"}</button>`; }).join("")}
     </div>
     <button type="button" class="back arrow onimg" data-act="cover" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
-    <button type="button" class="sidebtn l" data-act="dictH" aria-label="Diccionari"><span>📖</span><small>Diccionari</small></button>
+    ${chipHTML()}<button type="button" class="sidebtn l" data-act="dictH" aria-label="Diccionari"><span>📖</span><small>Diccionari</small></button>
     <button type="button" class="sidebtn r" data-act="gamesH" aria-label="Jocs"><span>🧩</span><small>Jocs</small></button>
   </div>`;
 }
@@ -844,6 +883,7 @@ function shelfView(g){
     ${shelves(g, list)}
   </div>
   </div>
+  ${(() => { const L = lvl(g); if (L < 0 && g > 1 && BOOKS.some(b => gradeOf(b) === g - 1)) return `<div class="below rf"><button type="button" class="cta" data-act="shelf" data-g="${g - 1}">Per escalfar motors 🔥</button></div>`; if (L > 0 && BOOKS.some(b => gradeOf(b) === g + 1)) return `<div class="below rf"><button type="button" class="cta" data-act="shelf" data-g="${g + 1}">Un repte per a tu ⭐</button></div>`; return ""; })()}
   ${rfPool(g).length ? `<div class="below rf"><button type="button" class="cta" data-act="rf" data-g="${g}">Reforç: practica el que et costa</button></div>` : ""}
   <details class="below"><summary>Per al mestre: errors per tipus en aquest dispositiu</summary>
     <dl><dt>Literal</dt><dd>${m.literal}</dd><dt>Vocabulari</dt><dd>${m.vocab}</dd><dt>Inferència</dt><dd>${m.infer}</dd></dl>
@@ -990,7 +1030,7 @@ document.addEventListener("touchend", e => {
   if (!touch) return;
   const dx = e.changedTouches[0].clientX - touch.x, dy = e.changedTouches[0].clientY - touch.y; touch = null;
   if (!(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5)) return;
-  if (view.name === "home") go({name:"courses"});
+  if (view.name === "home") enter();
   else if (view.name === "courses") go({name:"home"});
   else turn(dx < 0 ? 1 : -1);
 }, {passive:true});
@@ -1154,8 +1194,8 @@ function rfNext(){
 function rfAnswer(i){
   const z = view.r, it = z.items[z.cur], ok = !!it.q.options[i].ok;
   z.answered = {i, ok};
-  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[it.q.type] = (saved.hit[it.q.type] || 0) + 1; save(); } }
-  else { z.queue.push(z.cur); saved.miss[it.q.type] = (saved.miss[it.q.type] || 0) + 1; save(); }
+  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[it.q.type] = (saved.hit[it.q.type] || 0) + 1; gsRec(gradeOf(it.b), true); save(); } }
+  else { z.queue.push(z.cur); saved.miss[it.q.type] = (saved.miss[it.q.type] || 0) + 1; gsRec(gradeOf(it.b), false); save(); }
   z.seen[z.cur] = true; render();
 }
 function rfView(){
@@ -1582,16 +1622,17 @@ function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
   if (view.name === "dict") dictAfter();
-  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone"].includes(view.name));
+  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile"].includes(view.name));
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
+function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"profile"}); }
 function go(v){ view = v; render(); window.scrollTo(0, 0); }
 
 /* ---------- quiz logic: a wrong answer sends the question back to the queue ---------- */
@@ -1615,8 +1656,8 @@ function answer(i){
   const z = view.quiz, ch = book(view.id).chapters.find(c => c.n === view.n), q = ch.questions[z.cur];
   const ok = !!q.options[i].ok;
   z.answered = {i, ok};
-  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[q.type] = (saved.hit[q.type] || 0) + 1; save(); } }
-  else { z.queue.push(z.cur); saved.miss[q.type] = (saved.miss[q.type] || 0) + 1; save(); }
+  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[q.type] = (saved.hit[q.type] || 0) + 1; gsRec(gradeOf(book(view.id)), true); save(); } }
+  else { z.queue.push(z.cur); saved.miss[q.type] = (saved.miss[q.type] || 0) + 1; gsRec(gradeOf(book(view.id)), false); save(); }
   z.seen[z.cur] = true;
   render();
 }
@@ -1644,7 +1685,21 @@ document.addEventListener("click", e => {
   const a = el.dataset.act;
   if (a === "home"){ const cur = view.id && book(view.id); go(cur ? {name:"shelf", g:gradeOf(cur)} : {name:"home"}); }
   else if (a === "cover") go({name:"home"});
-  else if (a === "courses") go({name:"courses"});
+  else if (a === "courses") enter();
+  else if (a === "profile") go({name:"profile"});
+  else if (a === "pnew") go({name:"profile", adding:true});
+  else if (a === "pav"){ view.av = +el.dataset.i; document.querySelectorAll(".avpick button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === view.av)); }
+  else if (a === "pent"){ P.active = el.dataset.id; saveP(); loadSaved(); go({name:"courses"}); }
+  else if (a === "pmake"){
+    const nm = (document.getElementById("pname").value || "").trim().slice(0, 14) || "Lector";
+    let n = 1; while (P.list.some(x => x.id === "p" + n)) n++;
+    P.list.push({id:"p" + n, name:nm, av:view.av || 1}); P.active = "p" + n; saveP(); loadSaved(); go({name:"courses"});
+  }
+  else if (a === "pdel"){
+    if (!confirm("Vols esborrar aquest lector i tot el seu progrés?")) return;
+    const id = el.dataset.id; try { localStorage.removeItem(keyFor(id)); } catch(e){}
+    P.list = P.list.filter(x => x.id !== id); if (P.active === id) P.active = null; saveP(); loadSaved(); render();
+  }
   else if (a === "shelf") go({name:"shelf", g:+el.dataset.g});
   else if (a === "book") go({name:"book", id:el.dataset.id});
   else if (a === "read") go({name:"read", id:el.dataset.id, n:+el.dataset.n});

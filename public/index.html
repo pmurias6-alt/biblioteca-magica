@@ -274,7 +274,7 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .pdel{position:absolute;top:-6px;right:-4px;width:26px;height:26px;border-radius:50%;border:1.5px solid #8a5a2b;background:#f6d9cf;color:#7a2e12;font-size:.8rem;line-height:1;cursor:pointer;padding:0}
 .pq{font-family:var(--display,serif);color:#7a2e12;font-size:1.05rem;margin:18px 0 8px}.pname{width:100%;max-width:320px;padding:12px 14px;border:2px solid #8a5a2b;border-radius:12px;background:#fffaf0;color:#3b2a1a;font:700 1.15rem var(--display,serif);text-align:center}
 .avpick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}.avpick button{padding:3px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;aspect-ratio:1}.avpick button[aria-pressed="true"]{border-color:#ffd447;box-shadow:0 0 0 3px #7a2e12,0 0 18px rgba(255,211,106,.9)}.avpick .avi{border-width:2px}
-.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}.adm th,.adm td{padding:6px 8px;border-bottom:1px solid #c9993f}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
+.cta.out{background:#7a2e12;color:#fff}.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}.adm th,.adm td{padding:6px 8px;border-bottom:1px solid #c9993f}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
 .lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
 .plink{display:block;margin:16px auto 0;background:none;border:0;color:#7a2e12;font:700 .95rem var(--display,serif);text-decoration:underline;cursor:pointer}
 .pchip{position:absolute;z-index:6;top:76px;right:8px;display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:99px;border:2px solid #c9993f;background:rgba(42,22,12,.78);color:#f3d98b;font:700 .85rem var(--display,serif);cursor:pointer}.pchip .avi{width:34px;height:34px;border-width:2px}
@@ -827,6 +827,14 @@ function pushCloud(){
   clearTimeout(pushT);
   pushT = setTimeout(async () => { try { await loadFB(); const u = await new Promise(r => { const un = fbAuth.onAuthStateChanged(x => { un(); r(x); }); }); if (!u || u.uid !== c.uid) return; await fbDb.collection("biblioteca").doc(u.uid).set({data:saved, name:c.name, email:u.email, t:Date.now()}, {merge:true}); } catch(e){ console.warn(e); } }, 1500);
 }
+async function logoutCloud(){
+  const c = curP(); if (!c || !c.cloud) return;
+  clearTimeout(pushT);
+  try { await loadFB(); const u = await new Promise(r => { const un = fbAuth.onAuthStateChanged(x => { un(); r(x); }); }); if (u && u.uid === c.uid) await fbDb.collection("biblioteca").doc(u.uid).set({data:saved, name:c.name, email:u.email, t:Date.now()}, {merge:true}); } catch(e){ console.warn(e); }
+  try { if (fbAuth) await fbAuth.signOut(); } catch(e){}
+  try { localStorage.removeItem(keyFor(c.id)); } catch(e){}
+  P.list = P.list.filter(x => x.id !== c.id); P.active = null; saveP(); loadSaved();
+}
 async function cloudLogin(em, pw){
   em = String(em || "").trim().toLowerCase(); pw = String(pw || "").trim().toLowerCase();
   if (!em.includes("@")) em += "@" + SCHOOL;
@@ -933,6 +941,7 @@ function profileView(){
     <h2>${P.list.length && !adding ? "Qui llegeix avui?" : "Benvingut a la biblioteca!"}</h2>
     ${list}
     ${adding ? form : `<button type="button" class="cta" data-act="pnew">+ Nou lector</button>`}
+    ${curP() && curP().cloud && !adding ? `<button type="button" class="cta out" data-act="logout">Tancar la sessió de ${esc(curP().name)}</button>` : ""}
     ${isAdm() && !adding ? `<button type="button" class="cta alt" data-act="admin">📊 Panell del mestre</button>` : ""}
     ${!adding || !P.list.length ? `<button type="button" class="cta alt" data-act="login">🏫 Entra amb el compte de l'escola</button>` : ""}
     ${P.active && curP() ? `<button type="button" class="plink" data-act="courses">← Tornar a la torre</button>` : ""}
@@ -1782,6 +1791,7 @@ document.addEventListener("click", e => {
   else if (a === "profile") go({name:"profile"});
   else if (a === "pnew") go({name:"profile", adding:true});
   else if (a === "login") go({name:"login"});
+  else if (a === "logout"){ el.disabled = true; el.textContent = "Desant el teu progrés…"; logoutCloud().then(() => go({name:"profile"})); }
   else if (a === "admin"){ go({name:"admin"}); loadAdmin(); }
   else if (a === "lgoogle"){ const er = document.getElementById("lerr"); er.textContent = "Un moment…"; googleLogin().then(m => { if (m) er.textContent = m; else go({name:"courses"}); }); }
   else if (a === "lgo"){

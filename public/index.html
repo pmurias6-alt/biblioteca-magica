@@ -280,6 +280,7 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .scard{text-align:left;background:#fbf0d4;border:2px solid #c9993f;border-radius:12px;padding:8px 10px;margin:0 0 10px}.sh{display:flex;justify-content:space-between;gap:8px;cursor:pointer}.sh small{display:block;color:#8a5a2b;font-size:.72rem}.ss{font-size:.8rem;font-weight:700;white-space:nowrap}
 .sg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.78rem;color:#3b2a1a;margin:4px 0}.bm{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#3b2a1a}.bm select{padding:4px 8px;border:2px solid #8a5a2b;border-radius:8px;background:#fffaf0;font:700 .9rem var(--display,serif)}
 .arow{cursor:pointer}.late{color:#a32d2d;font-weight:700}.det td{background:#fbf0d4}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
+.hint{font-style:italic;font-size:.85rem;color:#8a5a2b;margin:6px 0 0}
 .lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
 .pchip.pc2{top:124px;padding:6px 14px}
 .chead{display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:6px}.chead .avi{width:64px;height:64px;flex:none}.chead h2{margin:0}.chead p{margin:0}
@@ -847,29 +848,33 @@ async function logoutCloud(){
   try { localStorage.removeItem(keyFor(c.id)); } catch(e){}
   P.list = P.list.filter(x => x.id !== c.id); P.active = null; saveP(); loadSaved();
 }
-async function cloudLogin(em, pw){
-  em = String(em || "").trim().toLowerCase(); pw = String(pw || "").trim().toLowerCase();
-  if (!em.includes("@")) em += "@" + SCHOOL;
-  if (!em.endsWith("@" + SCHOOL)) return "Fes servir el correu de l'escola (@" + SCHOOL + ").";
-  if (!pw) return "Escriu la contrasenya.";
-  const BAD = "El correu o la contrasenya no són correctes. Mira l'agenda.";
-  let fb; try { fb = await loadFB(); } catch(e){ return "No hi ha connexió. Connecta't a internet i torna-ho a provar."; }
-  let u = null;
-  try { u = (await fbAuth.signInWithEmailAndPassword(em, pw)).user; }
-  catch(e){
-    const c = (e && e.code) || "";
-    if (!/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return /too-many-requests/.test(c) ? "Massa intents. Torna-ho a provar d'aquí a una estona." : /network/.test(c) ? "No hi ha connexió." : "No s'ha pogut entrar. (" + (c || e.message) + ")";
-    try { u = (await fbAuth.createUserWithEmailAndPassword(em, pw)).user; } catch(e2){ return /email-already-in-use/.test((e2 && e2.code) || "") ? BAD : "No s'ha pogut entrar. (" + ((e2 && e2.code) || e2.message) + ")"; }
-    try { await fbDb.collection("claims").doc(u.uid).set({email:em, pw, t:Date.now()}); } catch(e3){ try { await u.delete(); } catch(x){ try { await fbAuth.signOut(); } catch(y){} } return BAD; }
+async function cloudLogin(nm, pw, av){
+  nm = String(nm || "").trim(); pw = String(pw || "").trim().toLowerCase();
+  const words = nm.split(/\s+/).filter(Boolean);
+  if (words.length < 2) return "Escriu el teu nom i el teu cognom.";
+  if (!pw) return "Escriu la contrasenya que t'ha dit la mestra.";
+  const BAD = "No et trobem. Revisa el nom, el cognom i la contrasenya.";
+  try { await loadFB(); } catch(e){ return "No hi ha connexió. Connecta't a internet i torna-ho a provar."; }
+  const cands = [slugOf(nm)]; if (words.length > 2) cands.push(slugOf(words.slice(0, 2).join(" ")));
+  for (const sl of cands){
+    if (!sl) continue; const em = sl + "@" + SCHOOL; let u = null;
+    try { u = (await fbAuth.signInWithEmailAndPassword(em, pw)).user; }
+    catch(e){
+      const c = (e && e.code) || "";
+      if (!/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return /too-many-requests/.test(c) ? "Massa intents. Torna-ho a provar d'aquí a una estona." : /network/.test(c) ? "No hi ha connexió." : "No s'ha pogut entrar. (" + (c || e.message) + ")";
+      try { u = (await fbAuth.createUserWithEmailAndPassword(em, pw)).user; } catch(e2){ continue; }
+      try { await fbDb.collection("claims").doc(u.uid).set({email:em, pw, t:Date.now()}); } catch(e3){ try { await u.delete(); } catch(x){ try { await fbAuth.signOut(); } catch(y){} } continue; }
+    }
+    return finishCloud(u, em, av);
   }
-  return finishCloud(u, em);
+  return BAD;
 }
-async function finishCloud(u, em){
+async function finishCloud(u, em, av){
   em = (u.email || em || "").toLowerCase();
   const id = "c" + u.uid.slice(0, 10);
   let pr = P.list.find(x => x.id === id);
   if (!pr){ pr = {id, uid:u.uid, name:nameOf(em) || "Lector", av:(parseInt(u.uid.slice(0, 4), 36) % AVN) + 1, cloud:true}; P.list.push(pr); }
-  pr.email = em;
+  pr.email = em; if (av) pr.av = av;
   P.active = id; saveP(); loadSaved();
   await syncRoster(pr);
   try { await pullCloud(u.uid); } catch(e){ console.warn(e); }
@@ -1014,14 +1019,16 @@ function home(){
 function loginView(){
   return `
   <div class="page prof">
-    <h2>Compte de l'escola</h2>
-    <p class="muted">Escriu el teu usuari (nom.cognom) i la contrasenya de l'agenda. Així guardem el teu progrés al núvol.</p>
-    <input id="lem" class="pname" type="text" inputmode="email" autocomplete="username" autocapitalize="off" placeholder="nom.cognom">
+    <h2>Com et dius?</h2>
+    <input id="lem" class="pname" type="text" autocomplete="name" autocapitalize="words" placeholder="Nom i cognom">
     <input id="lpw" class="pname" type="password" autocomplete="current-password" placeholder="Contrasenya" style="margin-top:10px">
+    <p class="hint">La contrasenya que t'ha dit la mestra</p>
+    <h3 class="pq">Tria el teu company</h3>
+    <div class="avpick">${Array.from({length:AVN}, (_, i) => `<button type="button" data-act="pav" data-i="${i + 1}" aria-pressed="${(view.av || 1) === i + 1}" aria-label="Company ${i + 1}"><img class="avi" src="img/av-${i + 1}.jpg" alt=""></button>`).join("")}</div>
     <p id="lerr" class="lerr" role="alert"></p>
-    <button type="button" class="cta" data-act="lgo">Entrar</button>
-    <button type="button" class="cta alt" data-act="lgoogle">Entra amb Google (mestres)</button>
-    <button type="button" class="plink" data-act="${P.list.length ? "profile" : "cover"}">← Enrere</button>
+    <button type="button" class="cta" data-act="lgo">Començar l'aventura</button>
+    <button type="button" class="plink" data-act="lgoogle">Accés per a mestres</button>
+    ${P.list.length ? `<button type="button" class="plink" data-act="profile">← Enrere</button>` : ""}
   </div>`;
 }
 const DIES = ["dg", "dl", "dt", "dc", "dj", "dv", "ds"];
@@ -1923,7 +1930,7 @@ document.addEventListener("click", e => {
   else if (a === "lgoogle"){ const er = document.getElementById("lerr"); er.textContent = "Un moment…"; googleLogin().then(m => { if (m) er.textContent = m; else go({name:"courses"}); }); }
   else if (a === "lgo"){
     const er = document.getElementById("lerr"), btn = el; btn.disabled = true; er.textContent = "Un moment…";
-    cloudLogin(document.getElementById("lem").value, document.getElementById("lpw").value).then(m => { if (m){ er.textContent = m; btn.disabled = false; } else go({name:"courses"}); });
+    cloudLogin(document.getElementById("lem").value, document.getElementById("lpw").value, view.av || 1).then(m => { if (m){ er.textContent = m; btn.disabled = false; } else go({name:"courses"}); });
   }
   else if (a === "pav"){ view.av = +el.dataset.i; document.querySelectorAll(".avpick button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === view.av)); }
   else if (a === "pent"){ P.active = el.dataset.id; saveP(); loadSaved(); go({name:"courses"}); }

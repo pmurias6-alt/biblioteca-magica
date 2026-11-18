@@ -274,7 +274,8 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .pdel{position:absolute;top:-6px;right:-4px;width:26px;height:26px;border-radius:50%;border:1.5px solid #8a5a2b;background:#f6d9cf;color:#7a2e12;font-size:.8rem;line-height:1;cursor:pointer;padding:0}
 .pq{font-family:var(--display,serif);color:#7a2e12;font-size:1.05rem;margin:18px 0 8px}.pname{width:100%;max-width:320px;padding:12px 14px;border:2px solid #8a5a2b;border-radius:12px;background:#fffaf0;color:#3b2a1a;font:700 1.15rem var(--display,serif);text-align:center}
 .avpick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}.avpick button{padding:3px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;aspect-ratio:1}.avpick button[aria-pressed="true"]{border-color:#ffd447;box-shadow:0 0 0 3px #7a2e12,0 0 18px rgba(255,211,106,.9)}.avpick .avi{border-width:2px}
-.cta.alt{background:#3f5f7a;color:#fff}.lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
+.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}.adm th,.adm td{padding:6px 8px;border-bottom:1px solid #c9993f}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
+.lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
 .plink{display:block;margin:16px auto 0;background:none;border:0;color:#7a2e12;font:700 .95rem var(--display,serif);text-decoration:underline;cursor:pointer}
 .pchip{position:absolute;z-index:6;top:76px;right:8px;display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:99px;border:2px solid #c9993f;background:rgba(42,22,12,.78);color:#f3d98b;font:700 .85rem var(--display,serif);cursor:pointer}.pchip .avi{width:34px;height:34px;border-width:2px}
 .dicscene{container-type:inline-size}
@@ -841,12 +842,39 @@ async function cloudLogin(em, pw){
     try { u = (await fbAuth.createUserWithEmailAndPassword(em, pw)).user; } catch(e2){ return /email-already-in-use/.test((e2 && e2.code) || "") ? BAD : "No s'ha pogut entrar. (" + ((e2 && e2.code) || e2.message) + ")"; }
     try { await fbDb.collection("claims").doc(u.uid).set({email:em, pw, t:Date.now()}); } catch(e3){ try { await u.delete(); } catch(x){ try { await fbAuth.signOut(); } catch(y){} } return BAD; }
   }
+  return finishCloud(u, em);
+}
+async function finishCloud(u, em){
+  em = (u.email || em || "").toLowerCase();
   const id = "c" + u.uid.slice(0, 10);
   let pr = P.list.find(x => x.id === id);
   if (!pr){ pr = {id, uid:u.uid, name:nameOf(em) || "Lector", av:(parseInt(u.uid.slice(0, 4), 36) % AVN) + 1, cloud:true}; P.list.push(pr); }
+  pr.email = em;
   P.active = id; saveP(); loadSaved();
   try { await pullCloud(u.uid); } catch(e){ console.warn(e); }
   save(); pushCloud(); return null;
+}
+const ADMINS = ["pmurias6@gmail.com", "pedro.murias@balmesonline.com"];
+const isAdm = () => { const c = curP(); return !!(c && c.cloud && ADMINS.includes((c.email || "").toLowerCase())); };
+async function googleLogin(){
+  let fb; try { fb = await loadFB(); } catch(e){ return "No hi ha connexió. Connecta't a internet i torna-ho a provar."; }
+  const pv = new fb.auth.GoogleAuthProvider(); pv.setCustomParameters({prompt:"select_account"});
+  try { const r = await fbAuth.signInWithPopup(pv); return finishCloud(r.user, r.user.email); }
+  catch(e){ const c = (e && e.code) || ""; if (/popup-closed|cancelled-popup/.test(c)) return "S'ha tancat la finestra. Torna-ho a provar."; return /popup-blocked/.test(c) ? "El navegador ha bloquejat la finestra d'entrada." : /unauthorized-domain/.test(c) ? "Aquesta web encara no està autoritzada a Firebase (Authentication → Configuració → Dominis autoritzats)." : "No s'ha pogut entrar. (" + (c || e.message) + ")"; }
+}
+async function loadAdmin(){
+  try { await loadFB(); const q = await fbDb.collection("biblioteca").get(); view.rows = q.docs.map(d => { const x = d.data(), v = x.data || {}; const hit = Object.values(v.hit || {}).reduce((a, c) => a + c, 0), miss = Object.values(v.miss || {}).reduce((a, c) => a + c, 0); const caps = Object.values(v.done || {}).reduce((a, c) => a + c.length, 0); return {name:x.name || "", email:x.email || "", caps, hit, miss, t:x.t || 0}; }).sort((a, b) => a.name.localeCompare(b.name)); }
+  catch(e){ view.err = "No s'han pogut llegir les dades. Has publicat les regles de Firebase? (" + ((e && e.code) || e.message) + ")"; }
+  if (view.name === "admin") render();
+}
+function adminView(){
+  const rows = view.rows, d = t => t ? new Date(t).toLocaleDateString("ca") : "";
+  return `
+  <div class="page prof">
+    <h2>Panell del mestre</h2>
+    ${view.err ? `<p class="lerr">${esc(view.err)}</p>` : !rows ? `<p class="muted">Carregant…</p>` : !rows.length ? `<p class="muted">Encara no hi ha cap alumne amb progrés al núvol.</p>` : `<div class="admwrap"><table class="adm"><thead><tr><th>Alumne</th><th>Capítols</th><th>Encerts</th><th>Última</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.name)}<small>${esc(r.email)}</small></td><td>${r.caps}</td><td>${r.hit + r.miss ? Math.round(100 * r.hit / (r.hit + r.miss)) + "%" : "–"}</td><td>${d(r.t)}</td></tr>`).join("")}</tbody></table></div>`}
+    <button type="button" class="plink" data-act="profile">← Enrere</button>
+  </div>`;
 }
 function gsRec(g, ok){ const a = (saved.gs[g] = saved.gs[g] || []); a.push(ok ? 1 : 0); if (a.length > 20) a.shift(); }
 function lvl(g){ const a = saved.gs[g] || []; if (a.length < 8) return 0; const r = a.reduce((x, y) => x + y, 0) / a.length; return r < .55 ? -1 : r >= .9 ? 1 : 0; }
@@ -888,6 +916,7 @@ function loginView(){
     <input id="lpw" class="pname" type="password" autocomplete="current-password" placeholder="Contrasenya" style="margin-top:10px">
     <p id="lerr" class="lerr" role="alert"></p>
     <button type="button" class="cta" data-act="lgo">Entrar</button>
+    <button type="button" class="cta alt" data-act="lgoogle">Entra amb Google (mestres)</button>
     <button type="button" class="plink" data-act="profile">← Enrere</button>
   </div>`;
 }
@@ -904,6 +933,7 @@ function profileView(){
     <h2>${P.list.length && !adding ? "Qui llegeix avui?" : "Benvingut a la biblioteca!"}</h2>
     ${list}
     ${adding ? form : `<button type="button" class="cta" data-act="pnew">+ Nou lector</button>`}
+    ${isAdm() && !adding ? `<button type="button" class="cta alt" data-act="admin">📊 Panell del mestre</button>` : ""}
     ${!adding || !P.list.length ? `<button type="button" class="cta alt" data-act="login">🏫 Entra amb el compte de l'escola</button>` : ""}
     ${P.active && curP() ? `<button type="button" class="plink" data-act="courses">← Tornar a la torre</button>` : ""}
   </div>`;
@@ -1685,14 +1715,14 @@ function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "login" ? loginView() : view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "admin" ? adminView() : view.name === "login" ? loginView() : view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
   if (view.name === "dict") dictAfter();
-  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile","login"].includes(view.name));
+  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile","login","admin"].includes(view.name));
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
 function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"profile"}); }
@@ -1752,6 +1782,8 @@ document.addEventListener("click", e => {
   else if (a === "profile") go({name:"profile"});
   else if (a === "pnew") go({name:"profile", adding:true});
   else if (a === "login") go({name:"login"});
+  else if (a === "admin"){ go({name:"admin"}); loadAdmin(); }
+  else if (a === "lgoogle"){ const er = document.getElementById("lerr"); er.textContent = "Un moment…"; googleLogin().then(m => { if (m) er.textContent = m; else go({name:"courses"}); }); }
   else if (a === "lgo"){
     const er = document.getElementById("lerr"), btn = el; btn.disabled = true; er.textContent = "Un moment…";
     cloudLogin(document.getElementById("lem").value, document.getElementById("lpw").value).then(m => { if (m){ er.textContent = m; btn.disabled = false; } else go({name:"courses"}); });

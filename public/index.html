@@ -1021,7 +1021,7 @@ function loginView(){
     <p id="lerr" class="lerr" role="alert"></p>
     <button type="button" class="cta" data-act="lgo">Entrar</button>
     <button type="button" class="cta alt" data-act="lgoogle">Entra amb Google (mestres)</button>
-    <button type="button" class="plink" data-act="profile">← Enrere</button>
+    <button type="button" class="plink" data-act="${P.list.length ? "profile" : "cover"}">← Enrere</button>
   </div>`;
 }
 const DIES = ["dg", "dl", "dt", "dc", "dj", "dv", "ds"];
@@ -1046,9 +1046,9 @@ function carnetView(){
     <button type="button" class="plink" data-act="courses">← Tornar a la torre</button>
   </div>`;
 }
-const AVN = 6;
+const AVN = 6, LOCAL_ON = false;
 function profileView(){
-  const adding = view.adding || !P.list.length;
+  const adding = LOCAL_ON && (view.adding || !P.list.length);
   const list = P.list.length ? `<ul class="plist">${P.list.map(x => `<li><button type="button" class="pcard" data-act="pent" data-id="${x.id}"><img class="avi" src="img/av-${x.av}.jpg" alt=""><b>${esc(x.name)}</b></button><button type="button" class="pdel" data-act="pdel" data-id="${x.id}" aria-label="Esborrar ${esc(x.name)}">✕</button></li>`).join("")}</ul>` : "";
   const form = `<h3 class="pq">Com et dius?</h3><input id="pname" class="pname" maxlength="14" autocomplete="off" placeholder="El teu nom" value="">
     <h3 class="pq">Tria el teu company</h3>
@@ -1058,7 +1058,7 @@ function profileView(){
   <div class="page prof">
     <h2>${P.list.length && !adding ? "Qui llegeix avui?" : "Benvingut a la biblioteca!"}</h2>
     ${list}
-    ${adding ? form : `<button type="button" class="cta" data-act="pnew">+ Nou lector</button>`}
+    ${adding ? form : LOCAL_ON ? `<button type="button" class="cta" data-act="pnew">+ Nou lector</button>` : ""}
     ${curP() && curP().cloud && !adding ? `<button type="button" class="cta out" data-act="logout">Tancar la sessió de ${esc(curP().name)}</button>` : ""}
     ${isAdm() && !adding ? `<button type="button" class="cta alt" data-act="admin">📊 Panell del mestre</button>` : ""}
     ${!adding || !P.list.length ? `<button type="button" class="cta alt" data-act="login">🏫 Entra amb el compte de l'escola</button>` : ""}
@@ -1857,7 +1857,7 @@ function render(){
   document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile","login","admin","carnet"].includes(view.name));
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
-function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"profile"}); }
+function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"login"}); }
 function go(v){ if (v.name === "shelf" && isLocked(v.g)) v = {name:"courses"}; view = v; render(); window.scrollTo(0, 0); }
 
 /* ---------- quiz logic: a wrong answer sends the question back to the queue ---------- */

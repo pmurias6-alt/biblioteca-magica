@@ -274,6 +274,7 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .pdel{position:absolute;top:-6px;right:-4px;width:26px;height:26px;border-radius:50%;border:1.5px solid #8a5a2b;background:#f6d9cf;color:#7a2e12;font-size:.8rem;line-height:1;cursor:pointer;padding:0}
 .pq{font-family:var(--display,serif);color:#7a2e12;font-size:1.05rem;margin:18px 0 8px}.pname{width:100%;max-width:320px;padding:12px 14px;border:2px solid #8a5a2b;border-radius:12px;background:#fffaf0;color:#3b2a1a;font:700 1.15rem var(--display,serif);text-align:center}
 .avpick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}.avpick button{padding:3px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;aspect-ratio:1}.avpick button[aria-pressed="true"]{border-color:#ffd447;box-shadow:0 0 0 3px #7a2e12,0 0 18px rgba(255,211,106,.9)}.avpick .avi{border-width:2px}
+.cta.alt{background:#3f5f7a;color:#fff}.lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
 .plink{display:block;margin:16px auto 0;background:none;border:0;color:#7a2e12;font:700 .95rem var(--display,serif);text-decoration:underline;cursor:pointer}
 .pchip{position:absolute;z-index:6;top:76px;right:8px;display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:99px;border:2px solid #c9993f;background:rgba(42,22,12,.78);color:#f3d98b;font:700 .85rem var(--display,serif);cursor:pointer}.pchip .avi{width:34px;height:34px;border-width:2px}
 .dicscene{container-type:inline-size}
@@ -796,8 +797,57 @@ function loadSaved(){
   document.documentElement.style.setProperty("--read-size", SIZES[saved.size] || "1.125rem");
 }
 function saveP(){ try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch(e){} }
-function save(){ if (!P.active) return; try { localStorage.setItem(keyFor(P.active), JSON.stringify(saved)); } catch(e){} }
+function save(){ if (!P.active) return; try { localStorage.setItem(keyFor(P.active), JSON.stringify(saved)); } catch(e){} pushCloud(); }
 const curP = () => P.list.find(x => x.id === P.active);
+/* ---------- compte del cole (Firebase, mateix projecte que Explora) ---------- */
+const FB_CFG = {apiKey:"AIzaSyCtj2tZQdRfrEscevXyzeMwQiaOY57iGAU", authDomain:"balmesonlinecom.firebaseapp.com", projectId:"balmesonlinecom", storageBucket:"balmesonlinecom.firebasestorage.app", messagingSenderId:"740748900490", appId:"1:740748900490:web:3b1c724d0143c683245573"};
+const FB_SDK = "https://www.gstatic.com/firebasejs/10.12.2/", SCHOOL = "balmesonline.com";
+let fbp = null, fbAuth = null, fbDb = null, pushT = null;
+function loadScr(src){ return new Promise((ok, ko) => { const e = document.createElement("script"); e.src = src; e.async = true; e.onload = ok; e.onerror = ko; document.head.appendChild(e); }); }
+function loadFB(){
+  if (fbp) return fbp;
+  fbp = (async () => {
+    await Promise.race([(async () => { await loadScr(FB_SDK + "firebase-app-compat.js"); await Promise.all([loadScr(FB_SDK + "firebase-auth-compat.js"), loadScr(FB_SDK + "firebase-firestore-compat.js")]); })(), new Promise((_, ko) => setTimeout(() => ko(new Error("timeout")), 12000))]);
+    const fb = window.firebase; if (!fb.apps.length) fb.initializeApp(FB_CFG);
+    fbAuth = fb.auth(); fbDb = fb.firestore(); return fb;
+  })().catch(e => { fbp = null; throw e; });
+  return fbp;
+}
+const nameOf = em => String(em || "").split("@")[0].split(/[._-]+/).filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+function mergeCloud(c){
+  if (!c) return;
+  Object.keys(c.done || {}).forEach(id => { saved.done[id] = Array.from(new Set((saved.done[id] || []).concat(c.done[id]))); });
+  ["miss", "hit"].forEach(k => Object.keys(c[k] || {}).forEach(t => { saved[k][t] = Math.max(saved[k][t] || 0, c[k][t]); }));
+  Object.keys(c.gs || {}).forEach(g => { if (!(saved.gs[g] || []).length) saved.gs[g] = c.gs[g]; });
+}
+async function pullCloud(uid){ const d = await fbDb.collection("biblioteca").doc(uid).get(); if (d.exists) mergeCloud(d.data().data); }
+function pushCloud(){
+  const c = curP(); if (!c || !c.cloud) return;
+  clearTimeout(pushT);
+  pushT = setTimeout(async () => { try { await loadFB(); const u = await new Promise(r => { const un = fbAuth.onAuthStateChanged(x => { un(); r(x); }); }); if (!u || u.uid !== c.uid) return; await fbDb.collection("biblioteca").doc(u.uid).set({data:saved, name:c.name, email:u.email, t:Date.now()}, {merge:true}); } catch(e){ console.warn(e); } }, 1500);
+}
+async function cloudLogin(em, pw){
+  em = String(em || "").trim().toLowerCase(); pw = String(pw || "").trim().toLowerCase();
+  if (!em.includes("@")) em += "@" + SCHOOL;
+  if (!em.endsWith("@" + SCHOOL)) return "Fes servir el correu de l'escola (@" + SCHOOL + ").";
+  if (!pw) return "Escriu la contrasenya.";
+  const BAD = "El correu o la contrasenya no són correctes. Mira l'agenda.";
+  let fb; try { fb = await loadFB(); } catch(e){ return "No hi ha connexió. Connecta't a internet i torna-ho a provar."; }
+  let u = null;
+  try { u = (await fbAuth.signInWithEmailAndPassword(em, pw)).user; }
+  catch(e){
+    const c = (e && e.code) || "";
+    if (!/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c)) return /too-many-requests/.test(c) ? "Massa intents. Torna-ho a provar d'aquí a una estona." : /network/.test(c) ? "No hi ha connexió." : "No s'ha pogut entrar. (" + (c || e.message) + ")";
+    try { u = (await fbAuth.createUserWithEmailAndPassword(em, pw)).user; } catch(e2){ return /email-already-in-use/.test((e2 && e2.code) || "") ? BAD : "No s'ha pogut entrar. (" + ((e2 && e2.code) || e2.message) + ")"; }
+    try { await fbDb.collection("claims").doc(u.uid).set({email:em, pw, t:Date.now()}); } catch(e3){ try { await u.delete(); } catch(x){ try { await fbAuth.signOut(); } catch(y){} } return BAD; }
+  }
+  const id = "c" + u.uid.slice(0, 10);
+  let pr = P.list.find(x => x.id === id);
+  if (!pr){ pr = {id, uid:u.uid, name:nameOf(em) || "Lector", av:(parseInt(u.uid.slice(0, 4), 36) % AVN) + 1, cloud:true}; P.list.push(pr); }
+  P.active = id; saveP(); loadSaved();
+  try { await pullCloud(u.uid); } catch(e){ console.warn(e); }
+  save(); pushCloud(); return null;
+}
 function gsRec(g, ok){ const a = (saved.gs[g] = saved.gs[g] || []); a.push(ok ? 1 : 0); if (a.length > 20) a.shift(); }
 function lvl(g){ const a = saved.gs[g] || []; if (a.length < 8) return 0; const r = a.reduce((x, y) => x + y, 0) / a.length; return r < .55 ? -1 : r >= .9 ? 1 : 0; }
 let view = {name:"home"};
@@ -829,6 +879,18 @@ function home(){
     <div class="scene photo"><img src="img/hero.jpg" alt="Biblioteca màgica. En Punt, l'aprenent de bibliotecari, diu: Hola! Soc en Punt. Tria un llibre i comença l'aventura!"></div>
   </div>`;
 }
+function loginView(){
+  return `
+  <div class="page prof">
+    <h2>Compte de l'escola</h2>
+    <p class="muted">Entra amb el correu de l'escola i la contrasenya de l'agenda. Així guardem el teu progrés al núvol.</p>
+    <input id="lem" class="pname" type="text" inputmode="email" autocomplete="username" autocapitalize="off" placeholder="nom.cognom@balmesonline.com">
+    <input id="lpw" class="pname" type="password" autocomplete="current-password" placeholder="Contrasenya" style="margin-top:10px">
+    <p id="lerr" class="lerr" role="alert"></p>
+    <button type="button" class="cta" data-act="lgo">Entrar</button>
+    <button type="button" class="plink" data-act="profile">← Enrere</button>
+  </div>`;
+}
 const AVN = 6;
 function profileView(){
   const adding = view.adding || !P.list.length;
@@ -842,6 +904,7 @@ function profileView(){
     <h2>${P.list.length && !adding ? "Qui llegeix avui?" : "Benvingut a la biblioteca!"}</h2>
     ${list}
     ${adding ? form : `<button type="button" class="cta" data-act="pnew">+ Nou lector</button>`}
+    ${!adding || !P.list.length ? `<button type="button" class="cta alt" data-act="login">🏫 Entra amb el compte de l'escola</button>` : ""}
     ${P.active && curP() ? `<button type="button" class="plink" data-act="courses">← Tornar a la torre</button>` : ""}
   </div>`;
 }
@@ -1622,14 +1685,14 @@ function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "login" ? loginView() : view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
   if (view.name === "dict") dictAfter();
-  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile"].includes(view.name));
+  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile","login"].includes(view.name));
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
 function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"profile"}); }
@@ -1688,6 +1751,11 @@ document.addEventListener("click", e => {
   else if (a === "courses") enter();
   else if (a === "profile") go({name:"profile"});
   else if (a === "pnew") go({name:"profile", adding:true});
+  else if (a === "login") go({name:"login"});
+  else if (a === "lgo"){
+    const er = document.getElementById("lerr"), btn = el; btn.disabled = true; er.textContent = "Un moment…";
+    cloudLogin(document.getElementById("lem").value, document.getElementById("lpw").value).then(m => { if (m){ er.textContent = m; btn.disabled = false; } else go({name:"courses"}); });
+  }
   else if (a === "pav"){ view.av = +el.dataset.i; document.querySelectorAll(".avpick button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === view.av)); }
   else if (a === "pent"){ P.active = el.dataset.id; saveP(); loadSaved(); go({name:"courses"}); }
   else if (a === "pmake"){
@@ -1697,7 +1765,7 @@ document.addEventListener("click", e => {
   }
   else if (a === "pdel"){
     if (!confirm("Vols esborrar aquest lector i tot el seu progrés?")) return;
-    const id = el.dataset.id; try { localStorage.removeItem(keyFor(id)); } catch(e){}
+    const id = el.dataset.id, gone = P.list.find(x => x.id === id); try { localStorage.removeItem(keyFor(id)); } catch(e){} if (gone && gone.cloud && fbAuth){ try { fbAuth.signOut(); } catch(e){} }
     P.list = P.list.filter(x => x.id !== id); if (P.active === id) P.active = null; saveP(); loadSaved(); render();
   }
   else if (a === "shelf") go({name:"shelf", g:+el.dataset.g});

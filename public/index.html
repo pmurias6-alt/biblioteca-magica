@@ -274,9 +274,14 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .pdel{position:absolute;top:-6px;right:-4px;width:26px;height:26px;border-radius:50%;border:1.5px solid #8a5a2b;background:#f6d9cf;color:#7a2e12;font-size:.8rem;line-height:1;cursor:pointer;padding:0}
 .pq{font-family:var(--display,serif);color:#7a2e12;font-size:1.05rem;margin:18px 0 8px}.pname{width:100%;max-width:320px;padding:12px 14px;border:2px solid #8a5a2b;border-radius:12px;background:#fffaf0;color:#3b2a1a;font:700 1.15rem var(--display,serif);text-align:center}
 .avpick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}.avpick button{padding:3px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;aspect-ratio:1}.avpick button[aria-pressed="true"]{border-color:#ffd447;box-shadow:0 0 0 3px #7a2e12,0 0 18px rgba(255,211,106,.9)}.avpick .avi{border-width:2px}
-.cta.out{background:#7a2e12;color:#fff}.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.78rem;text-align:left}.adm th,.adm td{padding:5px 4px;border-bottom:1px solid #c9993f}.arow{cursor:pointer}.late{color:#a32d2d;font-weight:700}.det td{background:#fbf0d4}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
+.cta.out{background:#7a2e12;color:#fff}.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.78rem;text-align:left}.adm th,.adm td{padding:5px 4px;border-bottom:1px solid #c9993f}.clsel{width:100%;padding:10px;border:2px solid #8a5a2b;border-radius:10px;background:#fffaf0;font:700 1rem var(--display,serif);color:#3b2a1a;margin-bottom:10px}
+.addst{text-align:left;margin:0 0 10px;background:#fbf0d4;border:2px solid #c9993f;border-radius:12px;padding:8px 12px}.addst summary{font-weight:700;color:#7a2e12;cursor:pointer}.addst textarea{width:100%;border:2px solid #8a5a2b;border-radius:10px;padding:8px;font:inherit;background:#fffaf0;margin-top:6px}
+.made{text-align:left;background:#e1efcf;border:2px solid #3f7a3a;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:.85rem}.made ul{margin:4px 0 0;padding-left:18px}
+.scard{text-align:left;background:#fbf0d4;border:2px solid #c9993f;border-radius:12px;padding:8px 10px;margin:0 0 10px}.sh{display:flex;justify-content:space-between;gap:8px;cursor:pointer}.sh small{display:block;color:#8a5a2b;font-size:.72rem}.ss{font-size:.8rem;font-weight:700;white-space:nowrap}
+.sg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.78rem;color:#3b2a1a;margin:4px 0}.bm{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#3b2a1a}.bm select{padding:4px 8px;border:2px solid #8a5a2b;border-radius:8px;background:#fffaf0;font:700 .9rem var(--display,serif)}
+.arow{cursor:pointer}.late{color:#a32d2d;font-weight:700}.det td{background:#fbf0d4}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
 .lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
-.pc2{top:122px;padding:6px 14px}
+.pchip.pc2{top:124px;padding:6px 14px}
 .chead{display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:6px}.chead .avi{width:64px;height:64px;flex:none}.chead h2{margin:0}.chead p{margin:0}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0 4px}.tiles div{min-width:0;background:#fbf0d4;border:2px solid #c9993f;border-radius:12px;padding:8px 2px}.tiles b{display:block;font:800 1.5rem var(--display,serif);color:#7a2e12}.tiles span{font-size:.68rem;line-height:1.15;color:#8a5a2b;display:block}
 .bars{display:flex;align-items:flex-end;gap:6px;height:110px;padding-top:14px}.bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}.bar i{display:block;width:100%;min-height:3px;border-radius:6px 6px 0 0}.bar b{position:absolute;top:-2px;font-size:.7rem;color:#7a2e12}.bar span{font-size:.72rem;color:#8a5a2b;margin-top:3px}
@@ -832,7 +837,7 @@ async function pullCloud(uid){ const d = await fbDb.collection("biblioteca").doc
 function pushCloud(){
   const c = curP(); if (!c || !c.cloud) return;
   clearTimeout(pushT);
-  pushT = setTimeout(async () => { try { await loadFB(); const u = await new Promise(r => { const un = fbAuth.onAuthStateChanged(x => { un(); r(x); }); }); if (!u || u.uid !== c.uid) return; await fbDb.collection("biblioteca").doc(u.uid).set({data:saved, name:c.name, email:u.email, t:Date.now()}, {merge:true}); } catch(e){ console.warn(e); } }, 1500);
+  pushT = setTimeout(async () => { try { await loadFB(); const u = await new Promise(r => { const un = fbAuth.onAuthStateChanged(x => { un(); r(x); }); }); if (!u || u.uid !== c.uid) return; await fbDb.collection("biblioteca").doc(u.uid).set({data:saved, name:c.name, email:u.email, teacher:c.teacher || null, classId:c.classId || null, t:Date.now()}, {merge:true}); } catch(e){ console.warn(e); } }, 1500);
 }
 async function logoutCloud(){
   const c = curP(); if (!c || !c.cloud) return;
@@ -866,40 +871,96 @@ async function finishCloud(u, em){
   if (!pr){ pr = {id, uid:u.uid, name:nameOf(em) || "Lector", av:(parseInt(u.uid.slice(0, 4), 36) % AVN) + 1, cloud:true}; P.list.push(pr); }
   pr.email = em;
   P.active = id; saveP(); loadSaved();
+  await syncRoster(pr);
   try { await pullCloud(u.uid); } catch(e){ console.warn(e); }
   save(); pushCloud(); return null;
 }
+async function syncRoster(pr){
+  try {
+    await loadFB(); const em = (pr.email || "").toLowerCase();
+    try { const t = await fbDb.collection("teachers").doc(em).get(); pr.staff = !!t.exists; } catch(e){}
+    if (pr.staff || ADMINS.includes(em)) { saveP(); return; }
+    const r = await fbDb.collection("roster").doc(em).get();
+    if (r.exists){
+      const d = r.data(); pr.classId = d.classId || null; pr.teacher = d.teacher || null; if (d.name) pr.name = d.name;
+      let course = null;
+      if (d.classId){ try { const c = await fbDb.collection("classes").doc(d.classId).get(); if (c.exists) course = +c.data().course || null; } catch(e){} }
+      pr.course = course; pr.bibMax = d.bibMax ? +d.bibMax : course;
+      saveP();
+    }
+  } catch(e){ console.warn(e); }
+}
 const ADMINS = ["pmurias6@gmail.com", "pedro.murias@balmesonline.com"];
-const isAdm = () => { const c = curP(); return !!(c && c.cloud && ADMINS.includes((c.email || "").toLowerCase())); };
+const isAdm = () => { const c = curP(); return !!(c && c.cloud && (c.staff || ADMINS.includes((c.email || "").toLowerCase()))); };
+const isLocked = g => { const c = curP(); return !!(c && c.cloud && !isAdm() && c.bibMax && g > c.bibMax); };
 async function googleLogin(){
   let fb; try { fb = await loadFB(); } catch(e){ return "No hi ha connexió. Connecta't a internet i torna-ho a provar."; }
   const pv = new fb.auth.GoogleAuthProvider(); pv.setCustomParameters({prompt:"select_account"});
   try { const r = await fbAuth.signInWithPopup(pv); return finishCloud(r.user, r.user.email); }
   catch(e){ const c = (e && e.code) || ""; if (/popup-closed|cancelled-popup/.test(c)) return "S'ha tancat la finestra. Torna-ho a provar."; return /popup-blocked/.test(c) ? "El navegador ha bloquejat la finestra d'entrada." : /unauthorized-domain/.test(c) ? "Aquesta web encara no està autoritzada a Firebase (Authentication → Configuració → Dominis autoritzats)." : "No s'ha pogut entrar. (" + (c || e.message) + ")"; }
 }
+const PWW = ["sol", "lluna", "flor", "drac", "bosc", "mar", "vent", "pedra", "foc", "gat", "nuvol", "estel"];
+const newPw = () => { const r = crypto.getRandomValues(new Uint32Array(2)); let n = String(r[1] % 100).padStart(2, "0"); const w = PWW[r[0] % PWW.length]; if (w.length + n.length < 6) n = String(r[1] % 1000).padStart(3, "0"); return w + n; };
+const slugOf = nm => String(nm).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.|\.$/g, "");
+const meAdm = () => ADMINS.includes(((curP() || {}).email || "").toLowerCase());
 async function loadAdmin(){
+  view.err = null;
   try {
-    await loadFB(); const q = await fbDb.collection("biblioteca").get();
-    view.rows = q.docs.map(d => {
-      const x = d.data(), v = x.data || {}, L = v.log || {}, w = lastDays(L, 7), t14 = typeRates(L, 14);
-      const hit = sumO(v.hit), miss = sumO(v.miss), caps = Object.values(v.done || {}).reduce((a, c) => a + c.length, 0);
-      const wk = Math.round(w.reduce((a, y) => a + (y.v.r || 0) + (y.v.w || 0), 0) / 60);
-      const days = Object.keys(L).filter(k => ((L[k].r || 0) + (L[k].w || 0) + (L[k].c || 0)) > 0).sort(), last = days.length ? days[days.length - 1] : "";
-      const ago = last ? Math.round((new Date(dayKey()) - new Date(last)) / 864e5) : null;
-      const NM = {literal:"literal", vocab:"vocabulari", infer:"inferència"};
-      let weak = ""; let wr = 101; Object.keys(t14).forEach(k => { const n = t14[k][0] + t14[k][1]; if (n >= 4 && 100 * t14[k][0] / n < wr){ wr = 100 * t14[k][0] / n; weak = NM[k]; } });
-      return {name:x.name || "", email:x.email || "", caps, hit, miss, t:x.t || 0, wk, ago, weak:wr < 70 ? weak : "", L, id:d.id || x.email || String(Math.random())};
-    }).sort((a, b) => a.name.localeCompare(b.name));
+    await loadFB(); const me = curP().email, adm = meAdm();
+    const cq = adm ? fbDb.collection("classes") : fbDb.collection("classes").where("teacher", "==", me);
+    view.classes = (await cq.get()).docs.map(d => Object.assign({id:d.id}, d.data())).sort((a, b) => String(a.name).localeCompare(String(b.name)));
+    if (!view.cls && view.classes.length) view.cls = view.classes[0].id;
+    await loadClass();
   } catch(e){ view.err = "No s'han pogut llegir les dades. Has publicat les regles de Firebase? (" + ((e && e.code) || e.message) + ")"; }
   if (view.name === "admin") render();
 }
+async function loadClass(){
+  if (!view.cls){ view.rows = []; return; }
+  const c = view.classes.find(x => x.id === view.cls) || {}, me = curP().email, adm = meAdm();
+  let rq = fbDb.collection("roster").where("classId", "==", view.cls); if (!adm) rq = rq.where("teacher", "==", me);
+  const ros = (await rq.get()).docs.map(d => Object.assign({id:d.id}, d.data()));
+  let bq = fbDb.collection("biblioteca"); if (!adm) bq = bq.where("teacher", "==", me);
+  const prog = {}; (await bq.get()).docs.forEach(d => { const x = d.data(); prog[(x.email || "").toLowerCase()] = x; });
+  view.rows = ros.map(r => {
+    const x = prog[r.id.toLowerCase()] || {}, v = x.data || {}, L = v.log || {}, w = lastDays(L, 7), t14 = typeRates(L, 14);
+    const hit = sumO(v.hit), miss = sumO(v.miss), caps = Object.values(v.done || {}).reduce((a, q) => a + q.length, 0);
+    const wk = Math.round(w.reduce((a, y) => a + (y.v.r || 0) + (y.v.w || 0), 0) / 60);
+    const days = Object.keys(L).filter(k => ((L[k].r || 0) + (L[k].w || 0) + (L[k].c || 0)) > 0).sort(), last = days.length ? days[days.length - 1] : "";
+    const ago = last ? Math.round((new Date(dayKey()) - new Date(last)) / 864e5) : null;
+    const NM = {literal:"literal", vocab:"vocabulari", infer:"inferència"}; let weak = "", wr = 101;
+    Object.keys(t14).forEach(k => { const n = t14[k][0] + t14[k][1]; if (n >= 4 && 100 * t14[k][0] / n < wr){ wr = 100 * t14[k][0] / n; weak = NM[k]; } });
+    const books = BOOKS.filter(b => (v.done || {})[b.id] && v.done[b.id].length >= b.totalChapters).length;
+    return {em:r.id, name:r.name || nameOf(r.id), pw:r.pw || "", max:r.bibMax || +c.course || 0, caps, books, hit, miss, wk, ago, weak:wr < 70 ? weak : "", L, started:!!x.email};
+  }).sort((a, b) => a.name.localeCompare(b.name));
+}
+async function addStudents(txt){
+  const c = view.classes.find(x => x.id === view.cls); if (!c) return;
+  const me = curP().email, out = [];
+  for (const line of String(txt).split("\n")){
+    const t = line.trim(); if (!t) continue;
+    const [nm, pw0] = t.split(/[,;\t]/).map(x => x.trim()), slug = slugOf(nm); if (!slug) continue;
+    const em = slug + "@" + SCHOOL, ref = fbDb.collection("roster").doc(em), prev = await ref.get().catch(() => null), pv = prev && prev.exists ? prev.data() : null;
+    const pw = String((pv && pv.pw) || pw0 || newPw()).toLowerCase();
+    await ref.set({email:em, name:(pv && pv.name) || nm, pw, classId:c.id, teacher:c.teacher || me, created:(pv && pv.created) || Date.now()}, {merge:true});
+    out.push([nm, slug, pw]);
+  }
+  view.made = out; await loadClass();
+}
 function adminView(){
-  const rows = view.rows;
-  const det = r => { const w = lastDays(r.L, 14); return `<tr class="det"><td colspan="5"><div class="muted" style="margin:0 0 2px">Minuts els últims 14 dies</div>${bars(w.map(x => Math.round(((x.v.r || 0) + (x.v.w || 0)) / 60)), w.map(x => x.d.getDate()), "#6fa54a")}</td></tr>`; };
+  const rows = view.rows, cl = view.classes || [];
+  const det = r => { const w = lastDays(r.L, 14); return `<div class="det">${bars(w.map(x => Math.round(((x.v.r || 0) + (x.v.w || 0)) / 60)), w.map(x => x.d.getDate()), "#6fa54a")}<p class="muted">Minuts els últims 14 dies</p></div>`; };
+  const made = view.made && view.made.length ? `<div class="made"><b>Alumnes afegits (apunta-ho a l'agenda):</b><ul>${view.made.map(m => `<li>${esc(m[0])} → usuari <b>${esc(m[1])}</b> · contrasenya <b>${esc(m[2])}</b></li>`).join("")}</ul></div>` : "";
   return `
   <div class="page prof">
     <h2>Panell del mestre</h2>
-    ${view.err ? `<p class="lerr">${esc(view.err)}</p>` : !rows ? `<p class="muted">Carregant…</p>` : !rows.length ? `<p class="muted">Encara no hi ha cap alumne amb progrés al núvol.</p>` : `<p class="muted" style="margin:0 0 6px">Toca un alumne per veure la seva evolució.</p><div class="admwrap"><table class="adm"><thead><tr><th>Alumne</th><th>Min. setm.</th><th>Encerts</th><th>Per reforçar</th><th>Última</th></tr></thead><tbody>${rows.map(r => `<tr class="arow" data-act="adet" data-id="${esc(r.id)}"><td>${esc(r.name)}<small>${esc(r.email)} · ${r.caps} cap.</small></td><td>${r.wk}</td><td>${r.hit + r.miss ? Math.round(100 * r.hit / (r.hit + r.miss)) + "%" : "–"}</td><td>${esc(r.weak) || "–"}</td><td class="${r.ago == null || r.ago > 7 ? "late" : ""}">${r.ago == null ? "mai" : r.ago === 0 ? "avui" : "fa " + r.ago + " d"}</td></tr>${view.open === r.id ? det(r) : ""}`).join("")}</tbody></table></div>`}
+    ${view.err ? `<p class="lerr">${esc(view.err)}</p>` : !view.classes ? `<p class="muted">Carregant…</p>` : !cl.length ? `<p class="muted">No tens cap classe. Crea-la a Explora (panell del mestre) i torna aquí.</p>` : `
+    <select class="clsel" data-act="clsel">${cl.map(c => `<option value="${esc(c.id)}"${c.id === view.cls ? " selected" : ""}>${esc(c.name || c.id)}${c.course ? " · " + c.course + "r" : ""}</option>`).join("")}</select>
+    <details class="addst"><summary>➕ Afegir alumnes</summary><p class="muted">Un per línia: <i>Nom Cognom</i> o <i>Nom Cognom, contrasenya</i>. Si no poses contrasenya, la creo jo.</p><textarea id="addtxt" rows="4" placeholder="Laia Garcia&#10;Marc Pons, drac12"></textarea><button type="button" class="cta" data-act="addst">Afegir a la classe</button></details>
+    ${made}
+    ${!rows ? `<p class="muted">Carregant…</p>` : !rows.length ? `<p class="muted">Encara no hi ha alumnes en aquesta classe.</p>` : rows.map(r => `<div class="scard"><div class="sh" data-act="adet" data-id="${esc(r.em)}"><div><b>${esc(r.name)}</b><small>usuari ${esc(r.em.split("@")[0])} · clau ${esc(r.pw)}</small></div><div class="ss ${r.ago == null || r.ago > 7 ? "late" : ""}">${!r.started ? "no ha entrat" : r.ago === 0 ? "avui" : "fa " + r.ago + " d"}</div></div>
+      <div class="sg"><span><b>${r.books}</b> llibres · ${r.caps} cap.</span><span><b>${r.wk}</b> min/setm.</span><span><b>${r.hit + r.miss ? Math.round(100 * r.hit / (r.hit + r.miss)) + "%" : "–"}</b> encerts</span>${r.weak ? `<span class="late">reforçar: ${esc(r.weak)}</span>` : ""}</div>
+      <label class="bm">Llibres oberts fins a <select data-bm="${esc(r.em)}">${[1, 2, 3, 4, 5, 6].map(g => `<option value="${g}"${g === r.max ? " selected" : ""}>${GRADES[g - 1][1]}</option>`).join("")}</select></label>
+      ${view.open === r.em ? det(r) : ""}</div>`).join("")}`}
     <button type="button" class="plink" data-act="profile">← Enrere</button>
   </div>`;
 }
@@ -954,8 +1015,8 @@ function loginView(){
   return `
   <div class="page prof">
     <h2>Compte de l'escola</h2>
-    <p class="muted">Entra amb el correu de l'escola i la contrasenya de l'agenda. Així guardem el teu progrés al núvol.</p>
-    <input id="lem" class="pname" type="text" inputmode="email" autocomplete="username" autocapitalize="off" placeholder="nom.cognom@balmesonline.com">
+    <p class="muted">Escriu el teu usuari (nom.cognom) i la contrasenya de l'agenda. Així guardem el teu progrés al núvol.</p>
+    <input id="lem" class="pname" type="text" inputmode="email" autocomplete="username" autocapitalize="off" placeholder="nom.cognom">
     <input id="lpw" class="pname" type="password" autocomplete="current-password" placeholder="Contrasenya" style="margin-top:10px">
     <p id="lerr" class="lerr" role="alert"></p>
     <button type="button" class="cta" data-act="lgo">Entrar</button>
@@ -1012,7 +1073,7 @@ function coursesView(){
     <div class="scene cmap">
       <img src="img/cursos.jpg" alt="Una torre de sis pisos numerats de l'1 al 6, un per cada curs.">
       ${[[77.3,15],[62.6,11.9],[48.3,11.9],[33.8,12.5],[19.2,12.6],[4.3,12.9]].map(([top, hh], i) => { const g = i + 1, n = BOOKS.filter(b => gradeOf(b) === g).length;
-        return `<button type="button" class="hot" style="top:${top}%;height:${hh}%" ${n ? `data-act="shelf" data-g="${g}"` : "disabled"} aria-label="${GRADES[i][1]}${n ? "" : ": aviat"}">${n ? "" : "<span>Aviat</span>"}</button>`; }).join("")}
+        return `<button type="button" class="hot" style="top:${top}%;height:${hh}%" ${n && !isLocked(g) ? `data-act="shelf" data-g="${g}"` : "disabled"} aria-label="${GRADES[i][1]}${n ? "" : ": aviat"}">${!n ? "<span>Aviat</span>" : isLocked(g) ? "<span>🔒</span>" : ""}</button>`; }).join("")}
     </div>
     <button type="button" class="back arrow onimg" data-act="cover" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
     ${chipHTML()}${curP() ? `<button type="button" class="pchip pc2" data-act="carnet" aria-label="El meu carnet"><span>📒 El meu carnet</span></button>` : ""}<button type="button" class="sidebtn l" data-act="dictH" aria-label="Diccionari"><span>📖</span><small>Diccionari</small></button>
@@ -1184,6 +1245,11 @@ function showTip(i, el){
   tip.style.setProperty("--ax", Math.max(14, Math.min(tw - 14, mid - left)) + "px");
 }
 let touch = null;
+document.addEventListener("change", e => {
+  const t = e.target;
+  if (t.dataset && t.dataset.act === "clsel"){ view.cls = t.value; view.made = null; view.rows = null; render(); loadClass().then(() => { if (view.name === "admin") render(); }); }
+  else if (t.dataset && t.dataset.bm){ fbDb.collection("roster").doc(t.dataset.bm).update({bibMax:+t.value}).then(() => { const r = (view.rows || []).find(x => x.em === t.dataset.bm); if (r) r.max = +t.value; t.style.outline = "3px solid #6fa54a"; }).catch(err => { t.style.outline = "3px solid #a32d2d"; alert("No s'ha pogut desar: " + ((err && err.code) || err.message)); }); }
+});
 document.addEventListener("touchstart", e => { if (e.target.closest("#pager, #swipe")) touch = {x:e.touches[0].clientX, y:e.touches[0].clientY}; }, {passive:true});
 document.addEventListener("touchend", e => {
   if (!touch) return;
@@ -1792,7 +1858,7 @@ function render(){
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
 function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"profile"}); }
-function go(v){ view = v; render(); window.scrollTo(0, 0); }
+function go(v){ if (v.name === "shelf" && isLocked(v.g)) v = {name:"courses"}; view = v; render(); window.scrollTo(0, 0); }
 
 /* ---------- quiz logic: a wrong answer sends the question back to the queue ---------- */
 function startQuiz(){
@@ -1851,6 +1917,7 @@ document.addEventListener("click", e => {
   else if (a === "login") go({name:"login"});
   else if (a === "carnet") go({name:"carnet"});
   else if (a === "adet"){ view.open = view.open === el.dataset.id ? null : el.dataset.id; render(); }
+  else if (a === "addst"){ const t = document.getElementById("addtxt").value; el.disabled = true; el.textContent = "Afegint…"; addStudents(t).catch(e => { view.err = "No s'han pogut afegir: " + ((e && e.code) || e.message); }).then(() => render()); }
   else if (a === "logout"){ el.disabled = true; el.textContent = "Desant el teu progrés…"; logoutCloud().then(() => go({name:"profile"})); }
   else if (a === "admin"){ go({name:"admin"}); loadAdmin(); }
   else if (a === "lgoogle"){ const er = document.getElementById("lerr"); er.textContent = "Un moment…"; googleLogin().then(m => { if (m) er.textContent = m; else go({name:"courses"}); }); }
@@ -1913,6 +1980,7 @@ document.addEventListener("click", e => {
 });
 
 applyStyle(); render();
+if (curP() && curP().cloud) syncRoster(curP()).then(() => { if (view.name === "courses") render(); });
 </script>
 </body>
 </html>

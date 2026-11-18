@@ -274,8 +274,14 @@ body[data-variant="d"] .onshelf .cb,.onshelf .cb{width:100%;height:100%;display:
 .pdel{position:absolute;top:-6px;right:-4px;width:26px;height:26px;border-radius:50%;border:1.5px solid #8a5a2b;background:#f6d9cf;color:#7a2e12;font-size:.8rem;line-height:1;cursor:pointer;padding:0}
 .pq{font-family:var(--display,serif);color:#7a2e12;font-size:1.05rem;margin:18px 0 8px}.pname{width:100%;max-width:320px;padding:12px 14px;border:2px solid #8a5a2b;border-radius:12px;background:#fffaf0;color:#3b2a1a;font:700 1.15rem var(--display,serif);text-align:center}
 .avpick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}.avpick button{padding:3px;border:3px solid transparent;border-radius:50%;background:none;cursor:pointer;aspect-ratio:1}.avpick button[aria-pressed="true"]{border-color:#ffd447;box-shadow:0 0 0 3px #7a2e12,0 0 18px rgba(255,211,106,.9)}.avpick .avi{border-width:2px}
-.cta.out{background:#7a2e12;color:#fff}.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.9rem;text-align:left}.adm th,.adm td{padding:6px 8px;border-bottom:1px solid #c9993f}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
+.cta.out{background:#7a2e12;color:#fff}.cta.alt{background:#3f5f7a;color:#fff}.admwrap{overflow-x:auto}.adm{width:100%;border-collapse:collapse;font-size:.78rem;text-align:left}.adm th,.adm td{padding:5px 4px;border-bottom:1px solid #c9993f}.arow{cursor:pointer}.late{color:#a32d2d;font-weight:700}.det td{background:#fbf0d4}.adm small{display:block;color:#8a5a2b;font-size:.72rem}
 .lerr{min-height:1.4em;color:#a32d2d;font-weight:700;margin:10px 0 0}
+.pc2{top:122px;padding:6px 14px}
+.chead{display:flex;align-items:center;gap:12px;text-align:left;margin-bottom:6px}.chead .avi{width:64px;height:64px;flex:none}.chead h2{margin:0}.chead p{margin:0}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0 4px}.tiles div{min-width:0;background:#fbf0d4;border:2px solid #c9993f;border-radius:12px;padding:8px 2px}.tiles b{display:block;font:800 1.5rem var(--display,serif);color:#7a2e12}.tiles span{font-size:.68rem;line-height:1.15;color:#8a5a2b;display:block}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;padding-top:14px}.bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}.bar i{display:block;width:100%;min-height:3px;border-radius:6px 6px 0 0}.bar b{position:absolute;top:-2px;font-size:.7rem;color:#7a2e12}.bar span{font-size:.72rem;color:#8a5a2b;margin-top:3px}
+.rates>div{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:.85rem}.rates span{width:88px;text-align:left;color:#3b2a1a}.rb{flex:1;height:12px;background:#e6d3a8;border-radius:99px;overflow:hidden}.rb i{display:block;height:100%;background:#6fa54a}.rates b{width:38px;color:#7a2e12}
+.stamps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px}.stamp{display:block;width:72px;height:72px;margin:0 auto 4px;border-radius:50%;overflow:hidden;border:3px solid #a32d2d;box-shadow:0 0 0 2px #f6e7c6,0 0 0 4px #a32d2d;transform:rotate(-6deg)}.stamp img,.stamp .emo{width:100%;height:100%;object-fit:cover}.stamps small{font-size:.7rem;color:#3b2a1a;line-height:1.1;display:block}
 .plink{display:block;margin:16px auto 0;background:none;border:0;color:#7a2e12;font:700 .95rem var(--display,serif);text-decoration:underline;cursor:pointer}
 .pchip{position:absolute;z-index:6;top:76px;right:8px;display:flex;align-items:center;gap:8px;padding:4px 14px 4px 4px;border-radius:99px;border:2px solid #c9993f;background:rgba(42,22,12,.78);color:#f3d98b;font:700 .85rem var(--display,serif);cursor:pointer}.pchip .avi{width:34px;height:34px;border-width:2px}
 .dicscene{container-type:inline-size}
@@ -789,12 +795,12 @@ const PKEY = "biblioteca-magica-lectors";
 let P = {active:null, list:[]};
 try { const p = JSON.parse(localStorage.getItem(PKEY)); if (p && Array.isArray(p.list)) P = p; } catch(e){}
 const keyFor = id => id === "p1" ? KEY : KEY + ":" + id;
-const freshSaved = () => ({style:"d", done:{}, miss:{literal:0, vocab:0, infer:0}, size:1, hit:{}, gs:{}});
+const freshSaved = () => ({style:"d", done:{}, miss:{literal:0, vocab:0, infer:0}, size:1, hit:{}, gs:{}, log:{}});
 let saved = freshSaved();
 function loadSaved(){
   saved = freshSaved();
   if (P.active){ try { const s = JSON.parse(localStorage.getItem(keyFor(P.active))); if (s) Object.assign(saved, s); } catch(e){} }
-  saved.style = "d"; saved.hit = saved.hit || {}; saved.gs = saved.gs || {};
+  saved.style = "d"; saved.hit = saved.hit || {}; saved.gs = saved.gs || {}; saved.log = saved.log || {};
   document.documentElement.style.setProperty("--read-size", SIZES[saved.size] || "1.125rem");
 }
 function saveP(){ try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch(e){} }
@@ -819,6 +825,7 @@ function mergeCloud(c){
   if (!c) return;
   Object.keys(c.done || {}).forEach(id => { saved.done[id] = Array.from(new Set((saved.done[id] || []).concat(c.done[id]))); });
   ["miss", "hit"].forEach(k => Object.keys(c[k] || {}).forEach(t => { saved[k][t] = Math.max(saved[k][t] || 0, c[k][t]); }));
+  Object.keys(c.log || {}).forEach(k => { const a = (saved.log = saved.log || {})[k], b = c.log[k]; if (!a){ saved.log[k] = b; return; } ["r", "w", "c"].forEach(f => { a[f] = Math.max(a[f] || 0, b[f] || 0); }); ["h", "x"].forEach(f => { a[f] = a[f] || {}; Object.keys(b[f] || {}).forEach(t => { a[f][t] = Math.max(a[f][t] || 0, b[f][t]); }); }); });
   Object.keys(c.gs || {}).forEach(g => { if (!(saved.gs[g] || []).length) saved.gs[g] = c.gs[g]; });
 }
 async function pullCloud(uid){ const d = await fbDb.collection("biblioteca").doc(uid).get(); if (d.exists) mergeCloud(d.data().data); }
@@ -871,19 +878,47 @@ async function googleLogin(){
   catch(e){ const c = (e && e.code) || ""; if (/popup-closed|cancelled-popup/.test(c)) return "S'ha tancat la finestra. Torna-ho a provar."; return /popup-blocked/.test(c) ? "El navegador ha bloquejat la finestra d'entrada." : /unauthorized-domain/.test(c) ? "Aquesta web encara no està autoritzada a Firebase (Authentication → Configuració → Dominis autoritzats)." : "No s'ha pogut entrar. (" + (c || e.message) + ")"; }
 }
 async function loadAdmin(){
-  try { await loadFB(); const q = await fbDb.collection("biblioteca").get(); view.rows = q.docs.map(d => { const x = d.data(), v = x.data || {}; const hit = Object.values(v.hit || {}).reduce((a, c) => a + c, 0), miss = Object.values(v.miss || {}).reduce((a, c) => a + c, 0); const caps = Object.values(v.done || {}).reduce((a, c) => a + c.length, 0); return {name:x.name || "", email:x.email || "", caps, hit, miss, t:x.t || 0}; }).sort((a, b) => a.name.localeCompare(b.name)); }
-  catch(e){ view.err = "No s'han pogut llegir les dades. Has publicat les regles de Firebase? (" + ((e && e.code) || e.message) + ")"; }
+  try {
+    await loadFB(); const q = await fbDb.collection("biblioteca").get();
+    view.rows = q.docs.map(d => {
+      const x = d.data(), v = x.data || {}, L = v.log || {}, w = lastDays(L, 7), t14 = typeRates(L, 14);
+      const hit = sumO(v.hit), miss = sumO(v.miss), caps = Object.values(v.done || {}).reduce((a, c) => a + c.length, 0);
+      const wk = Math.round(w.reduce((a, y) => a + (y.v.r || 0) + (y.v.w || 0), 0) / 60);
+      const days = Object.keys(L).filter(k => ((L[k].r || 0) + (L[k].w || 0) + (L[k].c || 0)) > 0).sort(), last = days.length ? days[days.length - 1] : "";
+      const ago = last ? Math.round((new Date(dayKey()) - new Date(last)) / 864e5) : null;
+      const NM = {literal:"literal", vocab:"vocabulari", infer:"inferència"};
+      let weak = ""; let wr = 101; Object.keys(t14).forEach(k => { const n = t14[k][0] + t14[k][1]; if (n >= 4 && 100 * t14[k][0] / n < wr){ wr = 100 * t14[k][0] / n; weak = NM[k]; } });
+      return {name:x.name || "", email:x.email || "", caps, hit, miss, t:x.t || 0, wk, ago, weak:wr < 70 ? weak : "", L, id:d.id || x.email || String(Math.random())};
+    }).sort((a, b) => a.name.localeCompare(b.name));
+  } catch(e){ view.err = "No s'han pogut llegir les dades. Has publicat les regles de Firebase? (" + ((e && e.code) || e.message) + ")"; }
   if (view.name === "admin") render();
 }
 function adminView(){
-  const rows = view.rows, d = t => t ? new Date(t).toLocaleDateString("ca") : "";
+  const rows = view.rows;
+  const det = r => { const w = lastDays(r.L, 14); return `<tr class="det"><td colspan="5"><div class="muted" style="margin:0 0 2px">Minuts els últims 14 dies</div>${bars(w.map(x => Math.round(((x.v.r || 0) + (x.v.w || 0)) / 60)), w.map(x => x.d.getDate()), "#6fa54a")}</td></tr>`; };
   return `
   <div class="page prof">
     <h2>Panell del mestre</h2>
-    ${view.err ? `<p class="lerr">${esc(view.err)}</p>` : !rows ? `<p class="muted">Carregant…</p>` : !rows.length ? `<p class="muted">Encara no hi ha cap alumne amb progrés al núvol.</p>` : `<div class="admwrap"><table class="adm"><thead><tr><th>Alumne</th><th>Capítols</th><th>Encerts</th><th>Última</th></tr></thead><tbody>${rows.map(r => `<tr><td>${esc(r.name)}<small>${esc(r.email)}</small></td><td>${r.caps}</td><td>${r.hit + r.miss ? Math.round(100 * r.hit / (r.hit + r.miss)) + "%" : "–"}</td><td>${d(r.t)}</td></tr>`).join("")}</tbody></table></div>`}
+    ${view.err ? `<p class="lerr">${esc(view.err)}</p>` : !rows ? `<p class="muted">Carregant…</p>` : !rows.length ? `<p class="muted">Encara no hi ha cap alumne amb progrés al núvol.</p>` : `<p class="muted" style="margin:0 0 6px">Toca un alumne per veure la seva evolució.</p><div class="admwrap"><table class="adm"><thead><tr><th>Alumne</th><th>Min. setm.</th><th>Encerts</th><th>Per reforçar</th><th>Última</th></tr></thead><tbody>${rows.map(r => `<tr class="arow" data-act="adet" data-id="${esc(r.id)}"><td>${esc(r.name)}<small>${esc(r.email)} · ${r.caps} cap.</small></td><td>${r.wk}</td><td>${r.hit + r.miss ? Math.round(100 * r.hit / (r.hit + r.miss)) + "%" : "–"}</td><td>${esc(r.weak) || "–"}</td><td class="${r.ago == null || r.ago > 7 ? "late" : ""}">${r.ago == null ? "mai" : r.ago === 0 ? "avui" : "fa " + r.ago + " d"}</td></tr>${view.open === r.id ? det(r) : ""}`).join("")}</tbody></table></div>`}
     <button type="button" class="plink" data-act="profile">← Enrere</button>
   </div>`;
 }
+/* ---------- registre diari (evolució) ---------- */
+const dayKey = d => { d = d || new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+function logDay(){ saved.log = saved.log || {}; const k = dayKey(); return saved.log[k] = saved.log[k] || {r:0, w:0, c:0, h:{}, x:{}}; }
+function logQ(type, ok){ const d = logDay(), o = ok ? d.h : d.x; o[type] = (o[type] || 0) + 1; }
+function trimLog(){ const ks = Object.keys(saved.log || {}).sort(); while (ks.length > 150) delete saved.log[ks.shift()]; }
+let lastAct = Date.now();
+["pointerdown", "keydown", "scroll", "touchstart"].forEach(ev => window.addEventListener(ev, () => { lastAct = Date.now(); }, {passive:true, capture:true}));
+setInterval(() => {
+  if (!P.active || document.hidden || Date.now() - lastAct > 60000) return;
+  const n = view.name; if (["home", "courses", "profile", "login", "admin", "carnet", "pick", "lang"].includes(n)) return;
+  const d = logDay(); if (n === "read") d.r += 5; else d.w += 5; trimLog(); save();
+}, 5000);
+function lastDays(log, n){ const out = []; for (let i = n - 1; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate() - i); const k = dayKey(d); out.push({k, d, v:(log || {})[k] || {r:0, w:0, c:0, h:{}, x:{}}}); } return out; }
+const sumO = o => Object.values(o || {}).reduce((a, c) => a + c, 0);
+function streakOf(log){ let n = 0; const d = new Date(); if (!(log || {})[dayKey(d)] || !((log[dayKey(d)].r || 0) + (log[dayKey(d)].w || 0) + (log[dayKey(d)].c || 0))) d.setDate(d.getDate() - 1); for (;;){ const v = (log || {})[dayKey(d)]; if (v && ((v.r || 0) + (v.w || 0) + (v.c || 0)) > 0){ n++; d.setDate(d.getDate() - 1); } else break; } return n; }
+function typeRates(log, days){ const t = {literal:[0, 0], vocab:[0, 0], infer:[0, 0]}; lastDays(log, days).forEach(x => Object.keys(t).forEach(k => { t[k][0] += (x.v.h || {})[k] || 0; t[k][1] += (x.v.x || {})[k] || 0; })); return t; }
 function gsRec(g, ok){ const a = (saved.gs[g] = saved.gs[g] || []); a.push(ok ? 1 : 0); if (a.length > 20) a.shift(); }
 function lvl(g){ const a = saved.gs[g] || []; if (a.length < 8) return 0; const r = a.reduce((x, y) => x + y, 0) / a.length; return r < .55 ? -1 : r >= .9 ? 1 : 0; }
 let view = {name:"home"};
@@ -928,6 +963,28 @@ function loginView(){
     <button type="button" class="plink" data-act="profile">← Enrere</button>
   </div>`;
 }
+const DIES = ["dg", "dl", "dt", "dc", "dj", "dv", "ds"];
+function bars(vals, labels, color){ const mx = Math.max(1, ...vals); return `<div class="bars">${vals.map((v, i) => `<div class="bar"><i style="height:${Math.round(100 * v / mx)}%;background:${color || "#c9993f"}"></i><b>${v ? v : ""}</b><span>${labels[i]}</span></div>`).join("")}</div>`; }
+function carnetView(){
+  const c = curP(); if (!c) return profileView();
+  const L = saved.log || {}, w = lastDays(L, 7), mins = w.map(x => Math.round(((x.v.r || 0) + (x.v.w || 0)) / 60)), tot = mins.reduce((a, b) => a + b, 0);
+  const rd = Math.round(w.reduce((a, x) => a + (x.v.r || 0), 0) / 60), caps = w.reduce((a, x) => a + (x.v.c || 0), 0);
+  const tr = typeRates(L, 14), NM = {literal:"Literal", vocab:"Vocabulari", infer:"Inferència"};
+  const done = BOOKS.filter(b => (saved.done[b.id] || []).length >= b.totalChapters);
+  const rate = k => { const [h, x] = tr[k]; return h + x ? Math.round(100 * h / (h + x)) : null; };
+  return `
+  <div class="page prof carnet">
+    <div class="chead"><img class="avi" src="img/av-${c.av}.jpg" alt=""><div><h2>${esc(c.name)}</h2><p class="muted">Carnet de lector</p></div></div>
+    <div class="tiles"><div><b>${streakOf(L)}</b><span>dies seguits</span></div><div><b>${tot}</b><span>min. setmana</span></div><div><b>${caps}</b><span>caps. nous</span></div><div><b>${done.length}</b><span>llibres fets</span></div></div>
+    <h3 class="pq">Minuts cada dia</h3>${bars(mins, w.map(x => DIES[x.d.getDay()]))}
+    <p class="muted" style="margin:6px 0 0">${rd} min. llegint · ${tot - rd} min. fent activitats</p>
+    <h3 class="pq">Com et van les preguntes (14 dies)</h3>
+    <div class="rates">${Object.keys(NM).map(k => `<div><span>${NM[k]}</span><div class="rb"><i style="width:${rate(k) || 0}%"></i></div><b>${rate(k) == null ? "–" : rate(k) + "%"}</b></div>`).join("")}</div>
+    <h3 class="pq">Els meus segells</h3>
+    ${done.length ? `<ul class="stamps">${done.map(b => `<li><span class="stamp">${art(b)}</span><small>${esc(b.title)}</small></li>`).join("")}</ul>` : `<p class="muted">Acaba un llibre per guanyar el teu primer segell!</p>`}
+    <button type="button" class="plink" data-act="courses">← Tornar a la torre</button>
+  </div>`;
+}
 const AVN = 6;
 function profileView(){
   const adding = view.adding || !P.list.length;
@@ -958,7 +1015,7 @@ function coursesView(){
         return `<button type="button" class="hot" style="top:${top}%;height:${hh}%" ${n ? `data-act="shelf" data-g="${g}"` : "disabled"} aria-label="${GRADES[i][1]}${n ? "" : ": aviat"}">${n ? "" : "<span>Aviat</span>"}</button>`; }).join("")}
     </div>
     <button type="button" class="back arrow onimg" data-act="cover" aria-label="Enrere"><svg viewBox="0 0 84 60" aria-hidden="true"><path d="M6 30 L32 6 V21 H78 V39 H32 V54 Z"/></svg></button>
-    ${chipHTML()}<button type="button" class="sidebtn l" data-act="dictH" aria-label="Diccionari"><span>📖</span><small>Diccionari</small></button>
+    ${chipHTML()}${curP() ? `<button type="button" class="pchip pc2" data-act="carnet" aria-label="El meu carnet"><span>📒 El meu carnet</span></button>` : ""}<button type="button" class="sidebtn l" data-act="dictH" aria-label="Diccionari"><span>📖</span><small>Diccionari</small></button>
     <button type="button" class="sidebtn r" data-act="gamesH" aria-label="Jocs"><span>🧩</span><small>Jocs</small></button>
   </div>`;
 }
@@ -1296,8 +1353,8 @@ function rfNext(){
 function rfAnswer(i){
   const z = view.r, it = z.items[z.cur], ok = !!it.q.options[i].ok;
   z.answered = {i, ok};
-  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[it.q.type] = (saved.hit[it.q.type] || 0) + 1; gsRec(gradeOf(it.b), true); save(); } }
-  else { z.queue.push(z.cur); saved.miss[it.q.type] = (saved.miss[it.q.type] || 0) + 1; gsRec(gradeOf(it.b), false); save(); }
+  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[it.q.type] = (saved.hit[it.q.type] || 0) + 1; logQ(it.q.type, true); gsRec(gradeOf(it.b), true); save(); } }
+  else { z.queue.push(z.cur); saved.miss[it.q.type] = (saved.miss[it.q.type] || 0) + 1; logQ(it.q.type, false); gsRec(gradeOf(it.b), false); save(); }
   z.seen[z.cur] = true; render();
 }
 function rfView(){
@@ -1724,14 +1781,14 @@ function render(){
   stopTalk();
   closeSheet();
   const b = view.id && book(view.id), ch = b && view.n && b.chapters.find(c => c.n === view.n);
-  app.innerHTML = view.name === "admin" ? adminView() : view.name === "login" ? loginView() : view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
+  app.innerHTML = view.name === "carnet" ? carnetView() : view.name === "admin" ? adminView() : view.name === "login" ? loginView() : view.name === "profile" ? profileView() : view.name === "pick" ? pickView(view.mode) : view.name === "lang" ? langView(view.mode, view.g) : view.name === "gdone" ? gdoneView() : view.name === "build" ? buildView() : view.name === "tf" ? tfView() : view.name === "games" ? gamesView(view.g, view.l || "all") : view.name === "pairs" ? pairsView() : view.name === "pdone" ? pairsDoneView() : view.name === "order" ? orderView() : view.name === "odone" ? orderDoneView() : view.name === "words" ? wordsView() : view.name === "wdone" ? wDoneView() : view.name === "dict" ? dictView(view.g, view.l || "all") : view.name === "reinforce" ? rfView() : view.name === "rfdone" ? rfDoneView() : view.name === "home" ? home() : view.name === "courses" ? coursesView() : view.name === "shelf" ? shelfView(view.g) : view.name === "book" ? bookView(b) : view.name === "read" ? readView(b, ch) : view.name === "quiz" ? quizView(b, ch) : doneView(b, ch);
   document.documentElement.lang = b ? b.lang : "ca";
   document.body.classList.toggle("full", ["home","courses","shelf","book"].includes(view.name));
   document.body.classList.toggle("alb", view.name === "read" && !!(ch && ch.pages));
   if (view.name === "read" && ch.pages){ view.pages = ch.pages.length; view.p = Math.min(view.p || 0, view.pages - 1); showPage(); }
   else if (view.name === "read"){ layoutPager(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutPager); }
   if (view.name === "dict") dictAfter();
-  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile","login","admin"].includes(view.name));
+  document.body.classList.toggle("gm", ["words","wdone","pairs","pdone","order","odone","build","tf","gdone","reinforce","rfdone","profile","login","admin","carnet"].includes(view.name));
 }
 window.addEventListener("resize", () => { if (view.name === "dict") { clearTimeout(window._rz); window._rz = setTimeout(render, 150); } });
 function enter(){ if (P.active && curP()) go({name:"courses"}); else go({name:"profile"}); }
@@ -1747,6 +1804,7 @@ function startQuiz(){
 function nextQuestion(){
   const z = view.quiz, b = book(view.id), ch = b.chapters.find(c => c.n === view.n);
   if (!z.queue.length){
+    if (!isDone(b.id, ch.n)) logDay().c++;
     saved.done[b.id] = Array.from(new Set([...(saved.done[b.id] || []), ch.n])); save();
     view.name = "done"; render(); window.scrollTo(0, 0); return;
   }
@@ -1758,8 +1816,8 @@ function answer(i){
   const z = view.quiz, ch = book(view.id).chapters.find(c => c.n === view.n), q = ch.questions[z.cur];
   const ok = !!q.options[i].ok;
   z.answered = {i, ok};
-  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[q.type] = (saved.hit[q.type] || 0) + 1; gsRec(gradeOf(book(view.id)), true); save(); } }
-  else { z.queue.push(z.cur); saved.miss[q.type] = (saved.miss[q.type] || 0) + 1; gsRec(gradeOf(book(view.id)), false); save(); }
+  if (ok){ if (!z.seen[z.cur]){ z.first++; saved.hit[q.type] = (saved.hit[q.type] || 0) + 1; logQ(q.type, true); gsRec(gradeOf(book(view.id)), true); save(); } }
+  else { z.queue.push(z.cur); saved.miss[q.type] = (saved.miss[q.type] || 0) + 1; logQ(q.type, false); gsRec(gradeOf(book(view.id)), false); save(); }
   z.seen[z.cur] = true;
   render();
 }
@@ -1791,6 +1849,8 @@ document.addEventListener("click", e => {
   else if (a === "profile") go({name:"profile"});
   else if (a === "pnew") go({name:"profile", adding:true});
   else if (a === "login") go({name:"login"});
+  else if (a === "carnet") go({name:"carnet"});
+  else if (a === "adet"){ view.open = view.open === el.dataset.id ? null : el.dataset.id; render(); }
   else if (a === "logout"){ el.disabled = true; el.textContent = "Desant el teu progrés…"; logoutCloud().then(() => go({name:"profile"})); }
   else if (a === "admin"){ go({name:"admin"}); loadAdmin(); }
   else if (a === "lgoogle"){ const er = document.getElementById("lerr"); er.textContent = "Un moment…"; googleLogin().then(m => { if (m) er.textContent = m; else go({name:"courses"}); }); }
